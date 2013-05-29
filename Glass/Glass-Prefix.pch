@@ -4,4 +4,13 @@
 
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
+
+#define GL_PRACTICES_SUPPORT_GL3 1
+
+    #import <OpenGL/OpenGL.h>
+
+    #import <GLKit/GLKit.h>
+
+    #import "VBKit.h"
+
 #endif
