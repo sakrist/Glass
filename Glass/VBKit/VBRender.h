@@ -30,5 +30,7 @@
 
 - (void) bindFramebuffer:(VBFramebuffer *)FBO;
 
+- (void) bindTexture:(GLenum)unit texture:(VBTextureObject*)texture;
+- (void) bindTexture:(GLenum)unit texture:(VBTextureObject*)texture target:(int)target;
 
 @end

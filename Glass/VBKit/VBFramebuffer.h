@@ -34,7 +34,6 @@
 - (bool) addRenderTarget:(VBTextureObject*)rt;
 - (bool) setDepthTarget:(VBTextureObject *)rt;
 
-
 - (void) addSameRendertarget;
 
 - (void) setCurrentRenderTarget:(VBTextureObject*)texture;
@@ -43,5 +42,7 @@
 
 
 - (void) setDrawBuffersCount:(int) c;
+
+- (void) unloadFramebuffer;
 
 @end

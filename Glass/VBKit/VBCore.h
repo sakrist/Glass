@@ -11,6 +11,8 @@
 
 @property (nonatomic) GLKVector2 viewSize;
 @property (nonatomic) float aspect;
+@property (nonatomic) float frameTime;
+@property (nonatomic) float runTime;
 
 + (VBCore *)c;
 

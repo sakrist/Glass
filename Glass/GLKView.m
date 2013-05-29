@@ -22,6 +22,8 @@
     
     BOOL _loadView;
     
+    float last;
+    
     NSViewController *_controller;
 }
 
@@ -66,7 +68,14 @@ static CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeSt
         return kCVReturnSuccess;
     }
     
-
+    float deltaTime = 1.0 / (outputTime->rateScalar * (double)outputTime->videoTimeScale / (double)outputTime->videoRefreshPeriod);
+//    NSLog(@"%f %f %f", deltaTime, (float)outputTime->videoTimeScale, (float)outputTime->videoRefreshPeriod);
+    
+    if (last <= deltaTime) {
+        last += deltaTime;
+        return kCVReturnSuccess;
+    }
+    last = deltaTime;
 	// There is no autorelease pool when this method is called
 	// because it will be called from a background thread
 	// It's important to create one or you will leak objects
@@ -231,6 +240,12 @@ static CVReturn displayLinkCallback(CVDisplayLinkRef displayLink, const CVTimeSt
 }
 
 
+- (void) mouseDragged:(NSEvent *)theEvent {
+    [_delegate performSelector:@selector(mouseDragged:) withObject:theEvent];
+}
 
+- (void)scrollWheel:(NSEvent *)event {
+    [_delegate performSelector:@selector(scrollWheel:) withObject:event];
+}
 
 @end

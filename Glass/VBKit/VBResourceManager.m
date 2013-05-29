@@ -149,7 +149,7 @@ static VBResourceManager *__instance;
         {
             TEXMAP[unit] = texture.glID;
             glBindTexture(texture.target, texture.glID);
-            [self checkError:texture.name];
+            GL_CHECK_ERROR
         }
     }
     else {
@@ -160,7 +160,7 @@ static VBResourceManager *__instance;
 
 - (void) buildCubeTexture:(VBTextureObject*)texture data:(NSMutableArray*)datas mipmap:(bool)bBuildMIPMAPs {
     
-    [self checkError:@"buildCubeTexture"];
+    GL_CHECK_ERROR
     
     texture.target = GL_TEXTURE_CUBE_MAP;
     [texture generateID];
@@ -168,18 +168,18 @@ static VBResourceManager *__instance;
     GL_CHECK_ERROR
     
     [self bindTexture:0 texture:texture target:GL_TEXTURE_CUBE_MAP];
-//    checkErrorF("bindTexture<CUBE>", texture->name);
     
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    checkErrorF("glTexParameteri<CUBE, MIN>", texture->name);
+
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    checkErrorF("glTexParameteri<CUBE, MAG>", texture->name);
+
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//    checkErrorF("glTexParameteri<CUBE, WRAP_S>", texture->name);
+
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//    checkErrorF("glTexParameteri<CUBE, WRAP_T>", texture->name);
+
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-//    checkErrorF("glTexParameteri<CUBE, WRAP_R>", texture->name);
+
+    GL_CHECK_ERROR
     
     for (int face = 0; face < 6; face++)
     {
@@ -198,8 +198,6 @@ static VBResourceManager *__instance;
                      texture.format,
                      texture.type,
                      ((data == nil) ? 0 : [data bytes]));
-        
-//        checkErrorF("glTexImage2D<CUBE, " + intToStr(face) + ">", texture->name);
     }
     
     GL_CHECK_ERROR
@@ -207,42 +205,30 @@ static VBResourceManager *__instance;
 
 - (void) buildTexture:(VBTextureObject *) texture  target:(int)target  data:(NSData*) data  mipmap:(bool) bBuildMIPMAPs {
     
-    NSString *info = [NSString stringWithFormat:@"VBResourceManager::BuildTexture2D( %@ );", texture.name];
-    [self checkError:info];
+    GL_CHECK_ERROR
     
     texture.target = target;
     texture.texel = GLKVector2Make(1.0f/texture.size.width, 1.0f/texture.size.height);
     
     [texture generateID];
     
-    info = [NSString stringWithFormat:@"glGenTextures( %@ );", texture.name];
-    [self checkError:info];
+    GL_CHECK_ERROR
     
     [self bindTexture:0 texture:texture];
     
-    if (data && _support_mipmap_generation)
-    {
+    if (data && _support_mipmap_generation) {
         glTexParameteri(texture.target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-//        info = "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR) for "; info += texture->name;
-    }
-    else
-    {
+    } else {
         glTexParameteri(texture.target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//        info = "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) for "; info += texture->name;
     }
-//    checkError(info);
+    
+    GL_CHECK_ERROR
     
     glTexParameteri(texture.target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    info = "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR) for "; info += texture->name;
-//    checkError(info);
     
     glTexParameteri(texture.target, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//    info = "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT) for "; info += texture->name;
-//    checkError(info);
     
     glTexParameteri(texture.target, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//    info = "glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT) for "; info += texture->name;
-//    checkError(info);
     
 
     glTexImage2D(texture.target, 0,
@@ -253,24 +239,18 @@ static VBResourceManager *__instance;
                texture.format,
                texture.type, [data bytes]);
     
-    [self checkError:@"texture generation"];
+    GL_CHECK_ERROR    
     
-    
-    if (data && _support_mipmap_generation)
-    {
+    if (data && _support_mipmap_generation) {
         glGenerateMipmap(target);
-        [self checkError:@"glGenerateMipmap"];
-//        checkErrorF("glGenerateMipmap", glTexTargetToString(target));
+        GL_CHECK_ERROR
     }
-    
 }
 
 
-- (void) checkError:(NSString*)info {
-    GLenum error = glGetError();
-    if (error == GL_NO_ERROR) return;
-    
-    NSLog(@"%@ 0x%04x", info, error);
+- (void) unloadTexture:(VBTextureObject*)texture {
+    [self.textures removeObject:texture];
+    [texture unload];
 }
 
 @end

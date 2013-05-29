@@ -16,6 +16,7 @@ static VBCore *__core_instance;
 	@synchronized(self) {
 		if(!__core_instance) {
 			__core_instance = [[VBCore alloc] init];
+            __core_instance.frameTime = 0.016999999999;
 		}
 	}
 	return __core_instance;

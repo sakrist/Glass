@@ -43,6 +43,6 @@
 - (void) bindTexture:(GLenum)unit texture:(VBTextureObject*)texture;
 - (void) bindTexture:(GLenum)unit texture:(VBTextureObject*)texture target:(int)target;
 
-- (void) checkError:(NSString*)info;
+- (void) unloadTexture:(VBTextureObject*)texture;
 
 @end

@@ -66,15 +66,31 @@ static const GLenum RENDERBUFFERS_ENUM[16] =
 }
 
 
-+ (VBFramebuffer*) createCubemapFramebuffer:(NSString*)name size:(int)size internalFormat:(int)texInternalFormat
-                                     format:(int)texFormat type:(int)texType {
-    return [VBFramebuffer createCubemapFramebuffer:name size:size internalFormat:texInternalFormat
-                                     format:texFormat type:texType depthInternalFormat:GL_DEPTH_COMPONENT24 depthFormat:GL_DEPTH_COMPONENT depthType:GL_UNSIGNED_BYTE];
++ (VBFramebuffer*) createCubemapFramebuffer:(NSString*)name
+                                       size:(int)size
+                             internalFormat:(int)texInternalFormat
+                                     format:(int)texFormat
+                                       type:(int)texType {
+    
+    return [VBFramebuffer createCubemapFramebuffer:name
+                                              size:size
+                                    internalFormat:texInternalFormat
+                                     format:texFormat
+                                              type:texType
+                               depthInternalFormat:GL_DEPTH_COMPONENT24
+                                       depthFormat:GL_DEPTH_COMPONENT
+                                         depthType:GL_UNSIGNED_BYTE];
 }
 
 
-+ (VBFramebuffer*) createCubemapFramebuffer:(NSString*)name size:(int)size internalFormat:(int)texInternalFormat
-format:(int)texFormat type:(int)texType  depthInternalFormat:(int)depthInternalFormat depthFormat:(int)depthFormat depthType:(int)depthType {
++ (VBFramebuffer*) createCubemapFramebuffer:(NSString*)name
+                                       size:(int)size
+                             internalFormat:(int)texInternalFormat
+                                     format:(int)texFormat
+                                       type:(int)texType
+                        depthInternalFormat:(int)depthInternalFormat
+                                depthFormat:(int)depthFormat
+                                  depthType:(int)depthType {
     
     VBFramebuffer* F = [[VBFramebuffer alloc] init];
 
@@ -130,16 +146,30 @@ format:(int)texFormat type:(int)texType  depthInternalFormat:(int)depthInternalF
 
 
 
-+ (id) framebuffer:(NSString*)name size:(CGSize)size texInternalFormat:(int)texInternalFormat texFormat:(int)texFormat  texType:(int)texType {
-    return [VBFramebuffer framebuffer:name size:size texInternalFormat:texInternalFormat texFormat:texFormat texType:texType
-                  depthInternalFormat:GL_DEPTH_COMPONENT depthFormat:GL_DEPTH_COMPONENT depthType:GL_UNSIGNED_BYTE];
++ (id) framebuffer:(NSString*)name
+              size:(CGSize)size
+ texInternalFormat:(int)texInternalFormat
+         texFormat:(int)texFormat
+           texType:(int)texType {
+    return [VBFramebuffer framebuffer:name
+                                 size:size
+                    texInternalFormat:texInternalFormat
+                            texFormat:texFormat
+                              texType:texType
+                  depthInternalFormat:GL_DEPTH_COMPONENT
+                          depthFormat:GL_DEPTH_COMPONENT
+                            depthType:GL_UNSIGNED_BYTE];
 }
 
-//int texInternalFormat = GL_RGBA,
-//int texFormat = GL_RGBA, int texType = GL_UNSIGNED_BYTE, int depthInternalFormat = GL_DEPTH_COMPONENT,
-//int depthFormat = GL_DEPTH_COMPONENT, int depthType = GL_UNSIGNED_BYTE);
 
-+ (id) framebuffer:(NSString*)name size:(CGSize)size texInternalFormat:(int)texInternalFormat texFormat:(int)texFormat  texType:(int)texType  depthInternalFormat:(int)depthInternalFormat depthFormat:(int)depthFormat depthType:(int)depthType {
++ (id) framebuffer:(NSString*)name
+              size:(CGSize)size
+ texInternalFormat:(int)texInternalFormat
+         texFormat:(int)texFormat
+           texType:(int)texType
+depthInternalFormat:(int)depthInternalFormat
+       depthFormat:(int)depthFormat
+         depthType:(int)depthType {
 
     VBFramebuffer *F = [[VBFramebuffer alloc] init];
 
@@ -208,14 +238,12 @@ format:(int)texFormat type:(int)texType  depthInternalFormat:(int)depthInternalF
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + _nTargets, rt.glID, 0);
     [_renderTargets addObject:rt];
     _nTargets = (GLuint)[_renderTargets count];
-//    renderTarget[_nTargets++] = rt;
     
     return [self check];
 }
 
 
 - (void) addSameRendertarget {
-    
 
     VBTextureObject *last = [_renderTargets lastObject];
     
@@ -233,8 +261,6 @@ format:(int)texFormat type:(int)texType  depthInternalFormat:(int)depthInternalF
     if (![self addRenderTarget:C]) {
         NSLog(@" - Same Texture %@ was not added to %@", namec, self.name);
     }
-
-
 }
 
 
@@ -292,6 +318,21 @@ format:(int)texFormat type:(int)texType  depthInternalFormat:(int)depthInternalF
     }
     
     return (status == GL_FRAMEBUFFER_COMPLETE);
+}
+
+
+- (void) unloadFramebuffer {
+    
+    [[VBResourceManager instance] unloadTexture:self.depthBuffer];
+    self.depthBuffer = nil;
+
+    for (VBTextureObject *t in self.renderTargets) {
+        [[VBResourceManager instance] unloadTexture:t];
+    }
+    [self.renderTargets removeAllObjects];
+    self.renderTargets = nil;
+    
+    glDeleteFramebuffers(1, &_nID);
 }
 
 

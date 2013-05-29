@@ -155,4 +155,12 @@
     }
 }
 
+- (void) bindTexture:(GLenum)unit texture:(VBTextureObject*)texture {
+    [[VBResourceManager instance] bindTexture:unit texture:texture target:GL_TEXTURE_2D];
+}
+
+- (void) bindTexture:(GLenum)unit texture:(VBTextureObject*)texture target:(int)target {
+    [[VBResourceManager instance] bindTexture:unit texture:texture target:GL_TEXTURE_2D];
+}
+
 @end

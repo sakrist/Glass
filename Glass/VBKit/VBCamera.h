@@ -10,10 +10,10 @@
 
 #define MATRIX_PROJECTION (GLKMatrix4){ 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0 }
 
-GLK_INLINE GLKVector4 GLKVector4MakeOne(float o)
+GLK_INLINE GLKVector4 GLKVector4MakeOne(float v)
 {
-    GLKVector4 v = { o, o, o, o };
-    return v;
+    GLKVector4 vector = { v, v, v, v };
+    return vector;
 }
 
 union _GLKMatrix4Cube
@@ -42,12 +42,10 @@ typedef union _GLKMatrix4Cube GLKMatrix4Cube;
 }
 
 @property (nonatomic) bool lockUpVector;
-
-
-- (GLKMatrix4) modelViewMatrix;
-- (GLKMatrix4) projectionMatrix;
-- (GLKMatrix4) mvpMatrix;
-- (GLKMatrix4) inverseMVPMatrix;
+@property (nonatomic) GLKMatrix4 modelViewMatrix;
+@property (nonatomic) GLKMatrix4 modelViewProjectionMatrix;
+@property (nonatomic) GLKMatrix4 projectionMatrix;
+@property (nonatomic) GLKMatrix4 inverseMVPMatrix;
 
 - (GLKMatrix4) projectionToTexutreMatrix;
 - (GLKVector3) position;
@@ -65,7 +63,7 @@ typedef union _GLKMatrix4Cube GLKMatrix4Cube;
 
 - (void) setPosition:(GLKVector3)p;
 
-- (void) afterupdate;
+- (void) update;
 
 + (GLKMatrix4Cube) cubemapMatrix:(GLKMatrix4)projectionMatrix pointOfView:(GLKVector3)pointOfView;
 

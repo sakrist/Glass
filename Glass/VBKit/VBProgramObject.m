@@ -517,6 +517,7 @@
 - (void) use {
     [self bind];
 }
+
 - (void) bind {
     glUseProgram(ProgramObject);
     GL_CHECK_ERROR

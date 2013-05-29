@@ -30,7 +30,10 @@
 
 - (void) setFiltrationMin:(GLenum)min_f mag:(GLenum)mag_f;
 
+
 + (id) loadTexture:(NSString*)filepath;
+
+- (void) unload;
 
 @end
 

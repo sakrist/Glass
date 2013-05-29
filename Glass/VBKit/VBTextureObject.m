@@ -34,12 +34,17 @@
     
     glTexParameteri(_target, GL_TEXTURE_MIN_FILTER, min_f);
     glTexParameteri(_target, GL_TEXTURE_MAG_FILTER, mag_f);
-    [[VBResourceManager instance] checkError:@"setFiltrationMin"];
+   
+    GL_CHECK_ERROR
 }
 
 + (id) loadTexture:(NSString*)filepath{
 
     NSData *imageData = [NSData dataWithContentsOfFile:filepath];
+    
+    if (!imageData) {
+        return nil;
+    }
     
 #if TARGET_OS_IPHONE
     
@@ -105,6 +110,11 @@
     GL_CHECK_ERROR
     
     return texture;
+}
+
+- (void) unload {
+    self.name = nil;
+    glDeleteTextures(1, &_glID);
 }
 
 

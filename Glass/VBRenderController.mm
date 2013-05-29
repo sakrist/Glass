@@ -98,6 +98,8 @@
     
     GLKMatrix4 _modelTransformation;
     
+    GLKMatrix4 _lightTransform;
+    
     GLKVector3 _modelCenter;
     
     bool _loded;
@@ -143,15 +145,36 @@
     
 }
 
+- (void) mouseDragged:(NSEvent *)theEvent {
+//        [theEvent deltaX]
+    
+    GLKVector3 p = _render.camera->_position;
+    p.y += [theEvent deltaY];
+    p.z += [theEvent deltaX];
+    
+    [_render.camera lookAtFrom:p
+                            to:_render.camera->_view
+                            up:GLKVector3Make(0.0, 1.0, 0.0)];
+}
+
+
+- (void)scrollWheel:(NSEvent *)event {
+    GLKVector3 p = _render.camera->_position;
+    p.x += [event scrollingDeltaY];
+    
+    [_render.camera lookAtFrom:p
+                            to:_render.camera->_view
+                            up:GLKVector3Make(0.0, 1.0, 0.0)];
+}
 
 - (void) setupGL {
     
     const GLubyte *v = glGetString(GL_VERSION);
     NSLog(@"OpenGL version %s", v);
     
-    _shadowmapSize = 1024;
+    _shadowmapSize = 2048;
     _causticmapSize = 2048;
-    _cubemapSize = 1024;
+    _cubemapSize = 2048;
 //    NSString *_modelName = @"boxes";
     
     float aspect = _glView.drawableWidth/_glView.drawableHeight;
@@ -163,8 +186,11 @@
     [_render blendFunction:GL_SRC_ALPHA second:GL_ONE_MINUS_SRC_ALPHA];
     
     [_render.camera perspectiveWithFov:M_PI_4 aspect:aspect near:1.0 far:4096.0];
-    [_render.camera lookAtFrom:GLKVector3Make(400.0, 150.0, 0.0)
-                            to:GLKVector3Make(0.0, 50.0, 0.0)
+    
+    GLKVector3 from = GLKVector3Make(400.0, 150.0, 0.0);
+    from = GLKVector3Make(-285, 193, -31.0);
+    [_render.camera lookAtFrom:from
+                            to:GLKVector3Make(100.0, 150.0, 0.0)
                             up:GLKVector3Make(0.0, 1.0, 0.0)];
     [_render.camera setLockUpVector:true];
     [_render blend:false];
@@ -264,7 +290,6 @@
 
     
     _lightSource = [[VBLight alloc] init];
-    _lightSource->_mat_proj = GLKMatrix4Identity;
     [_lightSource perspectiveWithFov:M_PI_4 aspect:1.0 near:100.0 far:1500.0];
     _lightSource.color = GLKVector3Make(1.0, 1.0, 1.0);
     
@@ -335,16 +360,15 @@
     [_adaptationProgram setUniformTextures:texturesArray];
 
     // NEXT STAGE
-    
-    _floorTexture = [VBTextureObject loadTexture:[[NSBundle mainBundle] pathForResource:@"floor.jpg" ofType:nil]];
-    _brickTexture = [VBTextureObject loadTexture:[[NSBundle mainBundle] pathForResource:@"brick.jpg" ofType:nil]];
+    _floorTexture = [VBTextureObject loadTexture:[[NSBundle mainBundle] pathForResource:@"f4.jpg" ofType:nil]];
+    _brickTexture = [VBTextureObject loadTexture:[[NSBundle mainBundle] pathForResource:@"texture2.jpg" ofType:nil]];
     
     _floor = [VBBuffer createBox:@"room" dimension:GLKVector3Make(1024.0, 1024.0, 1024.0) inNormals:false];
     _envCube = [VBBuffer createBox:@"env cube" dimension:GLKVector3Make(1.0, 1.0, 1.0) inNormals:false];
 
     _envSphere = [VBBuffer createSphere:@"env sphere" radius:5.0 ver:9 hor:9];
 
-    for (int i = 0; i < NUM_ENV_OBJECTS; ++i)
+    for (int i = 0; i < NUM_ENV_OBJECTS; i++)
     {
         float n = 25.0f + 25.0f * rand() / RAND_MAX;
         GLKVector3 dim = GLKVector3Make(n,n,n);
@@ -360,12 +384,12 @@
     }
     
     
-//    float radius = 50.0;
-//    _modelCenter = GLKVector3Make(0.0, radius, 0.0);
+    float radius = 50.0;
+    _modelCenter = GLKVector3Make(0.0, radius, 0.0);
 //    _glassObject = [VBBuffer createSphere:@"model" radius:radius ver:36 hor:36];
     
-//    _glassObject = [VBBuffer createBox:@"env cube" dimension:GLKVector3Make(50.0, 50.0, 50.0) inNormals:false];
-    _glassObject = [VBBuffer loadModel:[[NSBundle mainBundle] pathForResource:@"dragon" ofType:@"bin"] withScale:0.4];
+
+    _glassObject = [VBBuffer loadModel:[[NSBundle mainBundle] pathForResource:@"venus" ofType:@"bin"] withScale:0.4];
     _modelCenter = _glassObject.center;
     
     
@@ -381,10 +405,10 @@
     _doubleRefractionGlass = true;
     _drawInfo = false;
     
-//    _modelTransformation = rotationYXZMatrix(0.0, -2.0f * t, 0.0) * translationMatrix(_modelCenter);
     _modelTransformation = GLKMatrix4MakeTranslation(_modelCenter.x, _modelCenter.y, _modelCenter.z);
     
     _modelTransformation = GLKMatrix4TranslateWithVector3(_modelTransformation, _modelCenter);
+    _lightTransform = GLKMatrix4Identity;
     
     _loded = true;
 }
@@ -397,23 +421,39 @@
     
     if (_loded) {
         
-        float d = CFAbsoluteTimeGetCurrent()-_lastTime;
+//        float d = CFAbsoluteTimeGetCurrent()-_lastTime;
         
-        float t = d / 1000.0f;
+        float t = [VBCore c].runTime / 5.0f;
         GLKVector3 _b = GLKVector3Make(cos(t), 1.0f + 0.25f * cos(t), sin(t));
         
         GLKVector3 lp = GLKVector3Multiply(GLKVector3Make(384.0, _modelCenter.y + 200.0f, 384.0), _b);
         
         [_lightSource lookAtFrom:lp to:_modelCenter up:GLKVector3Make(0.0, 1.0, 0.0)];
         
-//        _modelTransformation = GLKMatrix4MakeTranslation(_modelCenter.x, _modelCenter.y, _modelCenter.z);
-        _modelTransformation = GLKMatrix4Rotate(_modelTransformation, 0.01, 0.0, -2.0 * t, 0.0);
         
+//        _lightTransform = GLKMatrix4Rotate(_lightTransform, 0.01, 1, 0, 0);
+//
+//        _lightSource.modelViewMatrix = GLKMatrix4Translate(_lightSource.modelViewMatrix, 1000, 0, 0);
+//        _lightSource.modelViewMatrix = GLKMatrix4Multiply(_lightSource.modelViewMatrix, _lightTransform);
+//        _lightSource.modelViewMatrix = GLKMatrix4Translate(_lightSource.modelViewMatrix, -1000, 0, 0);
+//        [_lightSource update];
+//        
+//        
+//        GLKVector3 p = GLKMatrix4MultiplyVector3(_lightSource.modelViewProjectionMatrix, _lightSource.position);
+//        [_lightSource setPosition:p];
+        
+//        _lightSource.modelViewMatrix = GLKMatrix4Multiply(_lightSource.modelViewMatrix,_lightTransform);
+//        [_lightSource update];
+        
+
+        _modelTransformation = GLKMatrix4Rotate(_modelTransformation, 0.01, 0.0, -2.0, 0.0);
+            
         _cubemapMatrices = [VBCamera cubemapMatrix:_cubemapProjectionMatrix pointOfView:_modelCenter];
         
         _envTransforms[0].m32 = sin(t / 10.0f) * 500.0f;
+        
     }
-
+    [VBCore c].runTime += [VBCore c].frameTime;
     _lastTime = CFAbsoluteTimeGetCurrent();
 }
 
@@ -436,46 +476,73 @@
         }
         
         glClear(GL_DEPTH_BUFFER_BIT);
-//        glClearColor(0.65, 0.65, 0.65, 1.0);
-//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        [self renderEnvironment:_render.camera.position modelViewProjection:_render.camera.mvpMatrix];
+        [self renderEnvironment:_render.camera.position modelViewProjection:_render.camera.modelViewProjectionMatrix];
         [self renderGlass];
+        
+        [_render blend:false];
+        
+        if (_applyPostprocess) {
+            [self applyPostprocess];
+            
+            [_render bindFramebuffer:0];
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            
+            [_finalPassProgram bind];
+            [_render bindTexture:0 texture:0];
+//            [_render bindTexture:0 texture:[[_screenBuffer renderTargets] objectAtIndex:0]];
+            [_render bindTexture:1 texture:[self luminanceTexture]];
+            [_render bindTexture:2 texture:0];
+//            [_render bindTexture:2 texture:_bloomTexture];
+
+//            render()->bindTexture(0, keyPressed('1') ? 0 : _screenBuffer->renderTarget[0]);
+//            render()->bindTexture(1, luminanceTexture());
+//            render()->bindTexture(2, keyPressed('2') ? 0 : _bloomTexture);
+            [_render drawFSQ];
+        }
+        [_render blend:true];
+        
     }
-    
-    
     
     GL_CHECK_ERROR
 }
 
 
+
 - (void) prerenderGlass {
+    
+    [_render bindFramebuffer:nil];
+    
     if (_useGeometryShader)
     {
         [_render bindFramebuffer:_reflectionRefractionCubemapBuffer];
         glClear(GL_DEPTH_BUFFER_BIT);
         [self renderEnvironmentToCubeMap:_modelCenter];
-    }
-    else
-    {
+        
+    } else {
         [_render bindFramebuffer:_reflectionRefractionBuffer];
-        for (int i = 0; i < 6; ++i)
-        {
+        
+        for (int i = 0; i < 6; i++) {
             [_reflectionRefractionBuffer setCurrentRenderTarget: _reflectionRefractionTexture target:GL_TEXTURE_CUBE_MAP_POSITIVE_X + i];
             [_reflectionRefractionBuffer setDrawBuffersCount:1];
+            
             glClear(GL_DEPTH_BUFFER_BIT);
             [self renderEnvironment:_modelCenter modelViewProjection:_cubemapMatrices.m[i]];
         }
     }
     
+    [_render bindFramebuffer:nil];
     [_render bindFramebuffer:_sceneDepthBuffer];
+    
     glClear(GL_DEPTH_BUFFER_BIT);
-    [self renderEnvironmentToDepth:_render.camera.position modelViewProjection:_render.camera.mvpMatrix];
+    [self renderEnvironmentToDepth:_render.camera.position modelViewProjection:_render.camera.modelViewProjectionMatrix];
     
     [_render bindFramebuffer:_backfaceBuffer];
+    
     glClear(GL_DEPTH_BUFFER_BIT);
+    
     [_backfaceProgram bind];
-    [_backfaceProgram setMVPMatrix:_render.camera.mvpMatrix];
+    [_backfaceProgram setMVPMatrix:_render.camera.modelViewProjectionMatrix];
     [_backfaceProgram setCameraPosition:_render.camera.position];
     [_backfaceProgram setUniform:@"mTransform" m:_modelTransformation];
     
@@ -484,6 +551,33 @@
     [_render cullFace:GL_BACK];
 }
 
+- (void) renderGlass {
+    
+    VBProgramObject* glass = _doubleRefractionGlass ? _glassDoubleRefProgram : _glassSingleRefProgram;
+    
+    [glass bind];
+    [glass setMVPMatrix:_render.camera.modelViewProjectionMatrix];
+    [glass setCameraPosition:_render.camera.position];
+    [glass setPrimaryLightPosition:_lightSource.position];
+    
+    [glass setUniform:@"cLightColor" v3:_lightSource.color];
+    [glass setUniform:@"mTransform" m:_modelTransformation];
+    [glass setUniform:@"indexOfRefraction" f:(1.0f / _materialIOR)];
+    
+    if (_doubleRefractionGlass)
+    {
+        [glass setUniform:@"mModelViewProjectionInverse" m:_render.camera.inverseMVPMatrix];
+        [[VBResourceManager instance] bindTexture:1 texture:[_backfaceBuffer.renderTargets objectAtIndex:0]];
+        [[VBResourceManager instance] bindTexture:2 texture:_backfaceBuffer.depthBuffer];
+    }
+    
+    VBTextureObject *tex = _useGeometryShader ? [_reflectionRefractionCubemapBuffer.renderTargets objectAtIndex:0] : _reflectionRefractionTexture;
+    
+    [[VBResourceManager instance] bindTexture:0 texture:tex];
+    [_glassObject renderAll];
+}
+
+
 - (void) prerenderCaustic {
     
     [_render bindFramebuffer:_sceneDepthBuffer];
@@ -491,7 +585,7 @@
     GL_CHECK_ERROR
     glClear(GL_DEPTH_BUFFER_BIT);
     GL_CHECK_ERROR
-    [self renderEnvironmentToDepth:_lightSource.position modelViewProjection:_lightSource.mvpMatrix];
+    [self renderEnvironmentToDepth:_lightSource.position modelViewProjection:_lightSource.modelViewProjectionMatrix];
     
     GL_CHECK_ERROR
     
@@ -501,7 +595,7 @@
     [_glassObject bind];
     
     [_backfaceProgram bind];
-    [_backfaceProgram setMVPMatrix:_lightSource.mvpMatrix];
+    [_backfaceProgram setMVPMatrix:_lightSource.modelViewProjectionMatrix];
     [_backfaceProgram setUniform:@"mTransform" m:_modelTransformation];
     [_backfaceProgram setUniform:@"indexOfRefraction" f:(1.0f / _materialIOR)];
     [_glassObject drawAllElements];
@@ -510,7 +604,7 @@
     glClear(GL_DEPTH_BUFFER_BIT);
     
     [_backfaceProgram bind];
-    [_backfaceProgram setMVPMatrix:_lightSource.mvpMatrix];
+    [_backfaceProgram setMVPMatrix:_lightSource.modelViewProjectionMatrix];
     [_backfaceProgram setUniform:@"mTransform" m:_modelTransformation];
     [_backfaceProgram setUniform:@"indexOfRefraction" f:_materialIOR];
     
@@ -523,12 +617,13 @@
 
 - (void) renderCaustic {
     
+    [_render bindFramebuffer:nil];
     [_render bindFramebuffer:_causticBuffer];
     [_causticBuffer setCurrentRenderTargetInt:0];
     
     glClear(GL_COLOR_BUFFER_BIT);
     
-    glDepthMask(false);
+    glDepthMask(GL_FALSE);
     glDepthFunc(GL_ALWAYS);
     [_render blendFunction:GL_ONE second:GL_ONE];
     [_render blend:true];
@@ -546,7 +641,7 @@
     
     [caustic bind];
     [caustic setCameraPosition:_lightSource.position];
-    [caustic setMVPMatrix:_lightSource.mvpMatrix];
+    [caustic setMVPMatrix:_lightSource.modelViewProjectionMatrix];
     [caustic setUniform:@"mInverseModelViewProjection" m:_lightSource.inverseMVPMatrix];
     
     [_photonMap renderAll];
@@ -561,21 +656,23 @@
     [_render drawFSQ];
     
     glDepthFunc(GL_LESS);
-    glDepthMask(true);
+    glDepthMask(GL_TRUE);
+    
     [_render blendFunction:GL_SRC_ALPHA second:GL_ONE_MINUS_SRC_ALPHA];
 }
-
 
 
 - (void) renderShadowmap {
     
     if (_useGeometryShader) {
+        
         [self renderEnvironmentToDepthCubeMap:_lightSource.position];
         
     } else {
         GLKMatrix4Cube cm_matrix = [VBCamera cubemapMatrix:_cubemapProjectionMatrix pointOfView:_lightSource.position];
         
         [self.render bindFramebuffer:_shadowBuffer];
+        glClear(GL_DEPTH_BUFFER_BIT);
         
         [_distanceRenderProgram use];
         [_distanceRenderProgram setPrimaryLightPosition:_lightSource.position];
@@ -583,7 +680,7 @@
         glPolygonOffset(4, 4);
         glEnable(GL_POLYGON_OFFSET_FILL);
         glClearColor(1.0e+5, 1.0e+5, 1.0e+5, 0.0);
-        for (int i = 0; i < 6; ++i)
+        for (int i = 0; i < 6; i++)
         {
             [_distanceRenderProgram setMVPMatrix:cm_matrix.m[i]];
             [_shadowBuffer setCurrentRenderTarget:_shadowmapTexture target:GL_TEXTURE_CUBE_MAP_POSITIVE_X + i];
@@ -597,6 +694,18 @@
     }
 }
 
+
+- (void) renderEnvObjects:(VBProgramObject*) program {
+    
+    [_envCube bind];
+    for (int i = 0; i < NUM_ENV_OBJECTS; i++) {
+        [program _uniformWithName:@"mTransform" value:&_envTransforms[i]];
+        [_envCube drawAllElements];
+    }
+    [_envCube unbind];
+}
+
+
 - (void) renderEnvironmentToCubeMap:(GLKVector3)cameraPosition {
     
     [[VBResourceManager instance] bindTexture:1 texture: (_useGeometryShader ? [_shadowCubemapBuffer.renderTargets objectAtIndex:0] : _shadowmapTexture)];
@@ -607,7 +716,7 @@
     
     [_indoorGSProgram bind];
     [_indoorGSProgram setPrimaryLightPosition:_lightSource.position];
-    [_indoorGSProgram setLightProjectionMatrix:_lightSource.mvpMatrix];
+    [_indoorGSProgram setLightProjectionMatrix:_lightSource.modelViewProjectionMatrix];
     [_indoorGSProgram _uniformWithName:@"mModelViewProjection[0]" value:&(_cubemapMatrices.v) count:6];
     [_indoorGSProgram setUniform:@"mTransform" m:GLKMatrix4MakeTranslation(0.0, 1024.0, 0.0)];
     [_indoorGSProgram setUniform:@"cLightColor" v3:_lightSource.color];
@@ -622,7 +731,7 @@
     
     [_envGSProgram bind];
     [_envGSProgram setCameraPosition:cameraPosition];
-    [_envGSProgram setLightProjectionMatrix:_lightSource.mvpMatrix];
+    [_envGSProgram setLightProjectionMatrix:_lightSource.modelViewProjectionMatrix];
     [_envGSProgram setPrimaryLightPosition:_lightSource.position];
     [_envGSProgram _uniformWithName:@"mModelViewProjection[0]" value:&(_cubemapMatrices.v) count:6];
     [_envGSProgram setUniform:@"cLightColor" v3:_lightSource.color];
@@ -655,17 +764,6 @@
     GL_CHECK_ERROR
 }
 
-- (void) renderEnvObjects:(VBProgramObject*) program {
-    [_envCube bind];
-    for (int i = 0; i < NUM_ENV_OBJECTS; ++i)
-    {
-        [program _uniformWithName:@"mTransform" value:&_envTransforms[i]];
-        [_envCube drawAllElements];
-    }
-    [_envCube unbind];
-}
-
-
 - (void) renderEnvironmentToDepth:(GLKVector3)cameraPosition  modelViewProjection:(GLKMatrix4)modelViewProjection {
     
     [_depthRenderProgram bind];
@@ -688,7 +786,7 @@
     [_indoorProgram bind];
     [_indoorProgram setMVPMatrix:modelViewProjection];
     [_indoorProgram setPrimaryLightPosition:_lightSource.position];
-    [_indoorProgram setLightProjectionMatrix:_lightSource.mvpMatrix];
+    [_indoorProgram setLightProjectionMatrix:_lightSource.modelViewProjectionMatrix];
     [_indoorProgram setUniform:@"mTransform" m:GLKMatrix4MakeTranslation(0.0, 1024.0, 0.0)];
     [_indoorProgram setUniform:@"cLightColor" v3:_lightSource.color];
     
@@ -702,7 +800,7 @@
     [_envProgram setCameraPosition:cameraPosition];
     [_envProgram setMVPMatrix:modelViewProjection];
     [_envProgram setPrimaryLightPosition: _lightSource.position];
-    [_envProgram setLightProjectionMatrix: _lightSource.mvpMatrix];
+    [_envProgram setLightProjectionMatrix: _lightSource.modelViewProjectionMatrix];
     [_envProgram setUniform: @"cLightColor" v3:_lightSource.color];
     [self renderEnvObjects:_envProgram];
 
@@ -715,31 +813,68 @@
 }
 
 
-- (void) renderGlass {
+
+
+// Post process
+
+- (void) applyPostprocess {
     
-    VBProgramObject* glass = _doubleRefractionGlass ? _glassDoubleRefProgram : _glassSingleRefProgram;
+    [_render bindFramebuffer:_postprocessBuffer];
+    [_postprocessBuffer setCurrentRenderTargetInt:0];
     
-    [glass bind];
-    [glass setMVPMatrix:_render.camera.mvpMatrix];
-    [glass setCameraPosition:_render.camera.position];
-    [glass setPrimaryLightPosition:_lightSource.position];
+    [_downsampleProgram bind];
+    [_downsampleProgram setUniform:@"vTexel" v2:[[_screenBuffer.renderTargets objectAtIndex:0] texel]];
     
-    [glass setUniform:@"cLightColor" v3:_lightSource.color];
-    [glass setUniform:@"mTransform" m:_modelTransformation];
-    [glass setUniform:@"indexOfRefraction" f:(1.0f / _materialIOR)];
+    [_render bindTexture:0 texture:[_screenBuffer.renderTargets objectAtIndex:0]];
+    [_render drawFSQ];
     
-    if (_doubleRefractionGlass)
-    {
-        [glass setUniform:@"mModelViewProjectionInverse" m:_render.camera.inverseMVPMatrix];
-        [[VBResourceManager instance] bindTexture:1 texture:[_backfaceBuffer.renderTargets objectAtIndex:0]];
-        [[VBResourceManager instance] bindTexture:2 texture:_backfaceBuffer.depthBuffer];
+    [_render bindTexture:0 texture:[_postprocessBuffer.renderTargets objectAtIndex:0]];
+    [_downsampleProgram setUniform:@"vTexel" v2:[[_postprocessBuffer.renderTargets objectAtIndex:0] texel]];
+    for (int i = 0; i < _numPPTextures; i++) {
+        
+        [_postprocessBuffer setCurrentRenderTarget:_postprocessTextures[i]];
+        
+        if (i != 0)
+        {
+            [_render bindTexture:0 texture:_postprocessTextures[i - 1]];
+            [_downsampleProgram setUniform:@"vTexel" v2:[_postprocessTextures[i - 1] texel]];
+        }
+        
+        [_render drawFSQ];
     }
     
-    VBTextureObject *tex = _useGeometryShader ? [_reflectionRefractionCubemapBuffer.renderTargets objectAtIndex:0] : _reflectionRefractionTexture;
+    [_postprocessBuffer setCurrentRenderTarget:[self luminanceTexture]];
+    [_adaptationProgram bind];
+    [_adaptationProgram setUniform:@"time" f: 2.0f * [VBCore c].frameTime ];
+    [_render bindTexture:0 texture:_postprocessTextures[_numPPTextures - 1]];
+    [_render bindTexture:1 texture:[self nextLuminanceTexture]];
+    [_render drawFSQ];
     
-    [[VBResourceManager instance] bindTexture:0 texture:tex];
-    [_glassObject renderAll];
+    [_postprocessBuffer setCurrentRenderTarget:_bloomTexture];
+    [_brightpassProgram bind];
+    [_render bindTexture:0 texture:_postprocessTextures[0]];
+    [_render bindTexture:1 texture:[self luminanceTexture]];
+    [_render drawFSQ];
+    
+    const float blurRadius = 5.0;
+    
+    [_blurProgram bind];
+    
+    [_postprocessBuffer setCurrentRenderTarget:_postprocessTextures[0]];
+    [_blurProgram setUniform:@"texel_radius" v3:GLKVector3Make( [_postprocessTextures[0] texel].x, 0.0, blurRadius )];
+    [_render bindTexture:0 texture:_bloomTexture];
+    [_render drawFSQ];
+    
+    [_postprocessBuffer setCurrentRenderTarget:_bloomTexture];
+    [_blurProgram setUniform:@"texel_radius" v3:GLKVector3Make( 0.0, [_postprocessTextures[0] texel].y, blurRadius )];
+    [_render bindTexture:0 texture:_postprocessTextures[0]];
+    [_render drawFSQ];
+    
+    _adaptationIndex = !_adaptationIndex;
 }
+
+- (VBTextureObject*) luminanceTexture { return _adaptationTexture[_adaptationIndex]; }
+- (VBTextureObject*) nextLuminanceTexture  { return _adaptationTexture[!_adaptationIndex]; }
 
 - (void) glkView:(GLKView *)view resizeWithSize:(CGSize)size {
     
