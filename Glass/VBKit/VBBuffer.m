@@ -121,8 +121,6 @@
     
     NSMutableData *vData = [NSMutableData data];
     NSMutableData *iData = [NSMutableData data];
-    //    vec2* photons = new vec2[numPhotons];
-    //    Index* indices = new Index[numPhotons];
     
     int k = 0;
     for (int i = 0; i < (int)size.y; ++i) {

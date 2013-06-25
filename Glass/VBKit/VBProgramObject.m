@@ -268,7 +268,7 @@
                 glGetShaderInfoLog(GeometryShader, nLogLen, &nLogLen, infoLog);
                 
                 if (cStatus != GL_TRUE) {
-                    NSLog(@"%@ GeometryShader %@", name, [NSString stringWithUTF8String:infoLog]);
+                    NSLog(@" - %@ GeometryShader %@", name, [NSString stringWithUTF8String:infoLog]);
                 }
                 
                 free(infoLog);
@@ -312,7 +312,7 @@
         
 
         if (cStatus != GL_TRUE) {
-            NSLog(@"%@ FragmentShader %@", name, [NSString stringWithUTF8String:infoLog]);
+            NSLog(@" - %@ FragmentShader %@", name, [NSString stringWithUTF8String:infoLog]);
         }
         
         free(infoLog);
@@ -350,7 +350,7 @@
         GL_CHECK_ERROR
         
         if (cStatus != GL_TRUE) {
-            NSLog(@"%@ ProgramObject %@", name, [NSString stringWithUTF8String:infoLog]);
+            NSLog(@" - %@ ProgramObject %@", name, [NSString stringWithUTF8String:infoLog]);
         }
         free(infoLog);
     }

@@ -7,20 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D2159C361756614900FEE5BC /* f2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D2159C351756614900FEE5BC /* f2.jpg */; };
-		D2159C3A175669BD00FEE5BC /* f3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D2159C38175669BD00FEE5BC /* f3.jpg */; };
-		D2159C3B175669BD00FEE5BC /* texture2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D2159C39175669BD00FEE5BC /* texture2.jpg */; };
-		D22E918C1756BB9900F1E247 /* f4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D22E918B1756BB9900F1E247 /* f4.jpg */; };
 		D278D6191754F6870088F138 /* VBBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = D278D6181754F6870088F138 /* VBBuffer.m */; };
-		D278D61E17552AAA0088F138 /* brick.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D278D61C17552AAA0088F138 /* brick.jpg */; };
-		D278D61F17552AAA0088F138 /* floor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D278D61D17552AAA0088F138 /* floor.jpg */; };
-		D278D628175538560088F138 /* box.bin in Resources */ = {isa = PBXBuildFile; fileRef = D278D621175538560088F138 /* box.bin */; };
-		D278D629175538560088F138 /* buddha.bin in Resources */ = {isa = PBXBuildFile; fileRef = D278D622175538560088F138 /* buddha.bin */; };
-		D278D62A175538560088F138 /* bunny.bin in Resources */ = {isa = PBXBuildFile; fileRef = D278D623175538560088F138 /* bunny.bin */; };
-		D278D62B175538560088F138 /* capsule.bin in Resources */ = {isa = PBXBuildFile; fileRef = D278D624175538560088F138 /* capsule.bin */; };
-		D278D62C175538560088F138 /* dragon.bin in Resources */ = {isa = PBXBuildFile; fileRef = D278D625175538560088F138 /* dragon.bin */; };
-		D278D62D175538560088F138 /* teapot.bin in Resources */ = {isa = PBXBuildFile; fileRef = D278D626175538560088F138 /* teapot.bin */; };
-		D278D62E175538560088F138 /* venus.bin in Resources */ = {isa = PBXBuildFile; fileRef = D278D627175538560088F138 /* venus.bin */; };
 		D285D643175354F200969F64 /* VBRender.m in Sources */ = {isa = PBXBuildFile; fileRef = D285D642175354F200969F64 /* VBRender.m */; };
 		D285D64B1753551700969F64 /* VBFramebuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = D285D6451753551700969F64 /* VBFramebuffer.m */; };
 		D285D64C1753551700969F64 /* VBResourceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D285D6481753551700969F64 /* VBResourceManager.m */; };
@@ -28,16 +15,6 @@
 		D285D6501753580C00969F64 /* VBCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = D285D64F1753580C00969F64 /* VBCamera.m */; };
 		D2A4B6FD17540637002CC881 /* VBLight.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A4B6FC17540637002CC881 /* VBLight.m */; };
 		D2A4B70017540BC6002CC881 /* VBProgramObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D2A4B6FF17540BC6002CC881 /* VBProgramObject.m */; };
-		D2A4B70D175418FB002CC881 /* caustic in Resources */ = {isa = PBXBuildFile; fileRef = D2A4B703175418FB002CC881 /* caustic */; };
-		D2A4B70E175418FB002CC881 /* common in Resources */ = {isa = PBXBuildFile; fileRef = D2A4B704175418FB002CC881 /* common */; };
-		D2A4B70F175418FB002CC881 /* copy_2d.program in Resources */ = {isa = PBXBuildFile; fileRef = D2A4B705175418FB002CC881 /* copy_2d.program */; };
-		D2A4B710175418FB002CC881 /* env in Resources */ = {isa = PBXBuildFile; fileRef = D2A4B706175418FB002CC881 /* env */; };
-		D2A4B711175418FB002CC881 /* fullscreen_scaled.program in Resources */ = {isa = PBXBuildFile; fileRef = D2A4B707175418FB002CC881 /* fullscreen_scaled.program */; };
-		D2A4B712175418FB002CC881 /* fullscreen.program in Resources */ = {isa = PBXBuildFile; fileRef = D2A4B708175418FB002CC881 /* fullscreen.program */; };
-		D2A4B713175418FC002CC881 /* glass in Resources */ = {isa = PBXBuildFile; fileRef = D2A4B709175418FB002CC881 /* glass */; };
-		D2A4B714175418FC002CC881 /* include in Resources */ = {isa = PBXBuildFile; fileRef = D2A4B70A175418FB002CC881 /* include */; };
-		D2A4B715175418FC002CC881 /* light in Resources */ = {isa = PBXBuildFile; fileRef = D2A4B70B175418FB002CC881 /* light */; };
-		D2A4B716175418FC002CC881 /* postprocess in Resources */ = {isa = PBXBuildFile; fileRef = D2A4B70C175418FB002CC881 /* postprocess */; };
 		D2AC57EA17562C9D007FC901 /* VBCore.m in Sources */ = {isa = PBXBuildFile; fileRef = D2AC57E917562C9D007FC901 /* VBCore.m */; };
 		D2C1A786174D8D8800589987 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2C1A785174D8D8800589987 /* GLKit.framework */; };
 		D2D0BAA9174B638B00FA0781 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2D0BAA8174B638B00FA0781 /* Cocoa.framework */; };
@@ -51,24 +28,34 @@
 		D2D0BAD0174B668900FA0781 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2D0BACF174B668900FA0781 /* CoreGraphics.framework */; };
 		D2D0BAD2174B669200FA0781 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2D0BAD1174B669200FA0781 /* QuartzCore.framework */; };
 		D2D0BAD4174B66A100FA0781 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D2D0BAD3174B66A100FA0781 /* OpenGL.framework */; };
+		D2E8FCF91757C3EE00D79692 /* box.bin in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCEB1757C3EE00D79692 /* box.bin */; };
+		D2E8FCFA1757C3EE00D79692 /* buddha.bin in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCEC1757C3EE00D79692 /* buddha.bin */; };
+		D2E8FCFB1757C3EE00D79692 /* bunny.bin in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCED1757C3EE00D79692 /* bunny.bin */; };
+		D2E8FCFC1757C3EE00D79692 /* capsule.bin in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCEE1757C3EE00D79692 /* capsule.bin */; };
+		D2E8FCFD1757C3EE00D79692 /* dragon.bin in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCEF1757C3EE00D79692 /* dragon.bin */; };
+		D2E8FCFE1757C3EE00D79692 /* teapot.bin in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCF01757C3EE00D79692 /* teapot.bin */; };
+		D2E8FCFF1757C3EE00D79692 /* venus.bin in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCF11757C3EE00D79692 /* venus.bin */; };
+		D2E8FD001757C3EE00D79692 /* brick.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCF31757C3EE00D79692 /* brick.jpg */; };
+		D2E8FD011757C3EE00D79692 /* f2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCF41757C3EE00D79692 /* f2.jpg */; };
+		D2E8FD021757C3EE00D79692 /* f3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCF51757C3EE00D79692 /* f3.jpg */; };
+		D2E8FD031757C3EE00D79692 /* f4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCF61757C3EE00D79692 /* f4.jpg */; };
+		D2E8FD041757C3EE00D79692 /* floor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCF71757C3EE00D79692 /* floor.jpg */; };
+		D2E8FD051757C3EE00D79692 /* texture2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FCF81757C3EE00D79692 /* texture2.jpg */; };
+		D2E8FD111757C3FE00D79692 /* caustic in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FD071757C3FE00D79692 /* caustic */; };
+		D2E8FD121757C3FE00D79692 /* common in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FD081757C3FE00D79692 /* common */; };
+		D2E8FD131757C3FE00D79692 /* copy_2d.program in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FD091757C3FE00D79692 /* copy_2d.program */; };
+		D2E8FD141757C3FE00D79692 /* env in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FD0A1757C3FE00D79692 /* env */; };
+		D2E8FD151757C3FE00D79692 /* fullscreen_scaled.program in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FD0B1757C3FE00D79692 /* fullscreen_scaled.program */; };
+		D2E8FD161757C3FE00D79692 /* fullscreen.program in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FD0C1757C3FE00D79692 /* fullscreen.program */; };
+		D2E8FD171757C3FE00D79692 /* glass in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FD0D1757C3FE00D79692 /* glass */; };
+		D2E8FD181757C3FE00D79692 /* include in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FD0E1757C3FE00D79692 /* include */; };
+		D2E8FD191757C3FE00D79692 /* light in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FD0F1757C3FE00D79692 /* light */; };
+		D2E8FD1A1757C3FE00D79692 /* postprocess in Resources */ = {isa = PBXBuildFile; fileRef = D2E8FD101757C3FE00D79692 /* postprocess */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		D2159C351756614900FEE5BC /* f2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = f2.jpg; sourceTree = "<group>"; };
-		D2159C38175669BD00FEE5BC /* f3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = f3.jpg; sourceTree = "<group>"; };
-		D2159C39175669BD00FEE5BC /* texture2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture2.jpg; sourceTree = "<group>"; };
-		D22E918B1756BB9900F1E247 /* f4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = f4.jpg; sourceTree = "<group>"; };
 		D278D6171754F6870088F138 /* VBBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VBBuffer.h; path = VBKit/VBBuffer.h; sourceTree = "<group>"; };
 		D278D6181754F6870088F138 /* VBBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VBBuffer.m; path = VBKit/VBBuffer.m; sourceTree = "<group>"; };
-		D278D61C17552AAA0088F138 /* brick.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brick.jpg; sourceTree = "<group>"; };
-		D278D61D17552AAA0088F138 /* floor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = floor.jpg; sourceTree = "<group>"; };
-		D278D621175538560088F138 /* box.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = box.bin; sourceTree = "<group>"; };
-		D278D622175538560088F138 /* buddha.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = buddha.bin; sourceTree = "<group>"; };
-		D278D623175538560088F138 /* bunny.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = bunny.bin; sourceTree = "<group>"; };
-		D278D624175538560088F138 /* capsule.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = capsule.bin; sourceTree = "<group>"; };
-		D278D625175538560088F138 /* dragon.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = dragon.bin; sourceTree = "<group>"; };
-		D278D626175538560088F138 /* teapot.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = teapot.bin; sourceTree = "<group>"; };
-		D278D627175538560088F138 /* venus.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = venus.bin; sourceTree = "<group>"; };
 		D285D641175354F200969F64 /* VBRender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VBRender.h; path = VBKit/VBRender.h; sourceTree = "<group>"; };
 		D285D642175354F200969F64 /* VBRender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VBRender.m; path = VBKit/VBRender.m; sourceTree = "<group>"; };
 		D285D6441753551700969F64 /* VBFramebuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VBFramebuffer.h; path = VBKit/VBFramebuffer.h; sourceTree = "<group>"; };
@@ -84,37 +71,8 @@
 		D2A4B6FC17540637002CC881 /* VBLight.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VBLight.m; path = VBKit/VBLight.m; sourceTree = "<group>"; };
 		D2A4B6FE17540BC6002CC881 /* VBProgramObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VBProgramObject.h; path = VBKit/VBProgramObject.h; sourceTree = "<group>"; };
 		D2A4B6FF17540BC6002CC881 /* VBProgramObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VBProgramObject.m; path = VBKit/VBProgramObject.m; sourceTree = "<group>"; };
-		D2A4B703175418FB002CC881 /* caustic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = caustic; path = "Glass Rendering/data/shaders/caustic"; sourceTree = SOURCE_ROOT; };
-		D2A4B704175418FB002CC881 /* common */ = {isa = PBXFileReference; lastKnownFileType = folder; name = common; path = "Glass Rendering/data/shaders/common"; sourceTree = SOURCE_ROOT; };
-		D2A4B705175418FB002CC881 /* copy_2d.program */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = copy_2d.program; path = "Glass Rendering/data/shaders/copy_2d.program"; sourceTree = SOURCE_ROOT; };
-		D2A4B706175418FB002CC881 /* env */ = {isa = PBXFileReference; lastKnownFileType = folder; name = env; path = "Glass Rendering/data/shaders/env"; sourceTree = SOURCE_ROOT; };
-		D2A4B707175418FB002CC881 /* fullscreen_scaled.program */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fullscreen_scaled.program; path = "Glass Rendering/data/shaders/fullscreen_scaled.program"; sourceTree = SOURCE_ROOT; };
-		D2A4B708175418FB002CC881 /* fullscreen.program */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fullscreen.program; path = "Glass Rendering/data/shaders/fullscreen.program"; sourceTree = SOURCE_ROOT; };
-		D2A4B709175418FB002CC881 /* glass */ = {isa = PBXFileReference; lastKnownFileType = folder; name = glass; path = "Glass Rendering/data/shaders/glass"; sourceTree = SOURCE_ROOT; };
-		D2A4B70A175418FB002CC881 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = include; path = "Glass Rendering/data/shaders/include"; sourceTree = SOURCE_ROOT; };
-		D2A4B70B175418FB002CC881 /* light */ = {isa = PBXFileReference; lastKnownFileType = folder; name = light; path = "Glass Rendering/data/shaders/light"; sourceTree = SOURCE_ROOT; };
-		D2A4B70C175418FB002CC881 /* postprocess */ = {isa = PBXFileReference; lastKnownFileType = folder; name = postprocess; path = "Glass Rendering/data/shaders/postprocess"; sourceTree = SOURCE_ROOT; };
 		D2AC57E817562C9D007FC901 /* VBCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VBCore.h; path = VBKit/VBCore.h; sourceTree = "<group>"; };
 		D2AC57E917562C9D007FC901 /* VBCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VBCore.m; path = VBKit/VBCore.m; sourceTree = "<group>"; };
-		D2C1A76F174D8BDB00589987 /* e2classes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2classes.h; path = "Glass Rendering/e2engine/e2classes.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A770174D8BDB00589987 /* e2const.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2const.h; path = "Glass Rendering/e2engine/e2const.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A771174D8BDB00589987 /* e2core.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = e2core.cpp; path = "Glass Rendering/e2engine/e2core.cpp"; sourceTree = SOURCE_ROOT; };
-		D2C1A772174D8BDB00589987 /* e2core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2core.h; path = "Glass Rendering/e2engine/e2core.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A773174D8BDB00589987 /* e2geometry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2geometry.h; path = "Glass Rendering/e2engine/e2geometry.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A774174D8BDB00589987 /* e2gui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = e2gui.cpp; path = "Glass Rendering/e2engine/e2gui.cpp"; sourceTree = SOURCE_ROOT; };
-		D2C1A775174D8BDB00589987 /* e2gui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2gui.h; path = "Glass Rendering/e2engine/e2gui.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A776174D8BDC00589987 /* e2helpers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = e2helpers.cpp; path = "Glass Rendering/e2engine/e2helpers.cpp"; sourceTree = SOURCE_ROOT; };
-		D2C1A777174D8BDC00589987 /* e2helpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2helpers.h; path = "Glass Rendering/e2engine/e2helpers.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A778174D8BDC00589987 /* e2manager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = e2manager.cpp; path = "Glass Rendering/e2engine/e2manager.cpp"; sourceTree = SOURCE_ROOT; };
-		D2C1A779174D8BDC00589987 /* e2manager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2manager.h; path = "Glass Rendering/e2engine/e2manager.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A77A174D8BDC00589987 /* e2primitives.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = e2primitives.cpp; path = "Glass Rendering/e2engine/e2primitives.cpp"; sourceTree = SOURCE_ROOT; };
-		D2C1A77B174D8BDD00589987 /* e2primitives.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2primitives.h; path = "Glass Rendering/e2engine/e2primitives.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A77C174D8BDD00589987 /* e2render.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = e2render.cpp; path = "Glass Rendering/e2engine/e2render.cpp"; sourceTree = SOURCE_ROOT; };
-		D2C1A77D174D8BDD00589987 /* e2render.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2render.h; path = "Glass Rendering/e2engine/e2render.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A77E174D8BDD00589987 /* e2scene.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = e2scene.cpp; path = "Glass Rendering/e2engine/e2scene.cpp"; sourceTree = SOURCE_ROOT; };
-		D2C1A77F174D8BDD00589987 /* e2scene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2scene.h; path = "Glass Rendering/e2engine/e2scene.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A780174D8BDD00589987 /* e2tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2tools.h; path = "Glass Rendering/e2engine/e2tools.h"; sourceTree = SOURCE_ROOT; };
-		D2C1A781174D8BDD00589987 /* e2types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = e2types.h; path = "Glass Rendering/e2engine/e2types.h"; sourceTree = SOURCE_ROOT; };
 		D2C1A785174D8D8800589987 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		D2D0BAA5174B638B00FA0781 /* Glass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Glass.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2D0BAA8174B638B00FA0781 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -136,8 +94,29 @@
 		D2D0BACF174B668900FA0781 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		D2D0BAD1174B669200FA0781 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		D2D0BAD3174B66A100FA0781 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
-		D2D0BB29174C27B700FA0781 /* scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = scene.cpp; path = "Glass Rendering/source/scene.cpp"; sourceTree = SOURCE_ROOT; };
-		D2D0BB2A174C27B700FA0781 /* scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scene.h; path = "Glass Rendering/source/scene.h"; sourceTree = SOURCE_ROOT; };
+		D2E8FCEB1757C3EE00D79692 /* box.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = box.bin; sourceTree = "<group>"; };
+		D2E8FCEC1757C3EE00D79692 /* buddha.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = buddha.bin; sourceTree = "<group>"; };
+		D2E8FCED1757C3EE00D79692 /* bunny.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = bunny.bin; sourceTree = "<group>"; };
+		D2E8FCEE1757C3EE00D79692 /* capsule.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = capsule.bin; sourceTree = "<group>"; };
+		D2E8FCEF1757C3EE00D79692 /* dragon.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = dragon.bin; sourceTree = "<group>"; };
+		D2E8FCF01757C3EE00D79692 /* teapot.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = teapot.bin; sourceTree = "<group>"; };
+		D2E8FCF11757C3EE00D79692 /* venus.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = venus.bin; sourceTree = "<group>"; };
+		D2E8FCF31757C3EE00D79692 /* brick.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = brick.jpg; sourceTree = "<group>"; };
+		D2E8FCF41757C3EE00D79692 /* f2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = f2.jpg; sourceTree = "<group>"; };
+		D2E8FCF51757C3EE00D79692 /* f3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = f3.jpg; sourceTree = "<group>"; };
+		D2E8FCF61757C3EE00D79692 /* f4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = f4.jpg; sourceTree = "<group>"; };
+		D2E8FCF71757C3EE00D79692 /* floor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = floor.jpg; sourceTree = "<group>"; };
+		D2E8FCF81757C3EE00D79692 /* texture2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = texture2.jpg; sourceTree = "<group>"; };
+		D2E8FD071757C3FE00D79692 /* caustic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = caustic; path = data/shaders/caustic; sourceTree = SOURCE_ROOT; };
+		D2E8FD081757C3FE00D79692 /* common */ = {isa = PBXFileReference; lastKnownFileType = folder; name = common; path = data/shaders/common; sourceTree = SOURCE_ROOT; };
+		D2E8FD091757C3FE00D79692 /* copy_2d.program */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = copy_2d.program; path = data/shaders/copy_2d.program; sourceTree = SOURCE_ROOT; };
+		D2E8FD0A1757C3FE00D79692 /* env */ = {isa = PBXFileReference; lastKnownFileType = folder; name = env; path = data/shaders/env; sourceTree = SOURCE_ROOT; };
+		D2E8FD0B1757C3FE00D79692 /* fullscreen_scaled.program */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fullscreen_scaled.program; path = data/shaders/fullscreen_scaled.program; sourceTree = SOURCE_ROOT; };
+		D2E8FD0C1757C3FE00D79692 /* fullscreen.program */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fullscreen.program; path = data/shaders/fullscreen.program; sourceTree = SOURCE_ROOT; };
+		D2E8FD0D1757C3FE00D79692 /* glass */ = {isa = PBXFileReference; lastKnownFileType = folder; name = glass; path = data/shaders/glass; sourceTree = SOURCE_ROOT; };
+		D2E8FD0E1757C3FE00D79692 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = include; path = data/shaders/include; sourceTree = SOURCE_ROOT; };
+		D2E8FD0F1757C3FE00D79692 /* light */ = {isa = PBXFileReference; lastKnownFileType = folder; name = light; path = data/shaders/light; sourceTree = SOURCE_ROOT; };
+		D2E8FD101757C3FE00D79692 /* postprocess */ = {isa = PBXFileReference; lastKnownFileType = folder; name = postprocess; path = data/shaders/postprocess; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,35 +135,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D278D61B17552AAA0088F138 /* textures */ = {
-			isa = PBXGroup;
-			children = (
-				D278D61C17552AAA0088F138 /* brick.jpg */,
-				D2159C351756614900FEE5BC /* f2.jpg */,
-				D2159C38175669BD00FEE5BC /* f3.jpg */,
-				D22E918B1756BB9900F1E247 /* f4.jpg */,
-				D2159C39175669BD00FEE5BC /* texture2.jpg */,
-				D278D61D17552AAA0088F138 /* floor.jpg */,
-			);
-			name = textures;
-			path = "Glass Rendering/data/textures";
-			sourceTree = SOURCE_ROOT;
-		};
-		D278D620175538560088F138 /* models */ = {
-			isa = PBXGroup;
-			children = (
-				D278D621175538560088F138 /* box.bin */,
-				D278D622175538560088F138 /* buddha.bin */,
-				D278D623175538560088F138 /* bunny.bin */,
-				D278D624175538560088F138 /* capsule.bin */,
-				D278D625175538560088F138 /* dragon.bin */,
-				D278D626175538560088F138 /* teapot.bin */,
-				D278D627175538560088F138 /* venus.bin */,
-			);
-			name = models;
-			path = "Glass Rendering/data/models";
-			sourceTree = SOURCE_ROOT;
-		};
 		D285D6401753535600969F64 /* VBKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -209,23 +159,6 @@
 				D2A4B6FF17540BC6002CC881 /* VBProgramObject.m */,
 			);
 			name = VBKit;
-			sourceTree = "<group>";
-		};
-		D2A4B702175418F0002CC881 /* shaders */ = {
-			isa = PBXGroup;
-			children = (
-				D2A4B703175418FB002CC881 /* caustic */,
-				D2A4B704175418FB002CC881 /* common */,
-				D2A4B705175418FB002CC881 /* copy_2d.program */,
-				D2A4B706175418FB002CC881 /* env */,
-				D2A4B707175418FB002CC881 /* fullscreen_scaled.program */,
-				D2A4B708175418FB002CC881 /* fullscreen.program */,
-				D2A4B709175418FB002CC881 /* glass */,
-				D2A4B70A175418FB002CC881 /* include */,
-				D2A4B70B175418FB002CC881 /* light */,
-				D2A4B70C175418FB002CC881 /* postprocess */,
-			);
-			name = shaders;
 			sourceTree = "<group>";
 		};
 		D2D0BA9C174B638B00FA0781 = {
@@ -277,31 +210,7 @@
 				D2D0BAC9174B643700FA0781 /* VBRenderController.mm */,
 				D2D0BACC174B657300FA0781 /* GLKView.h */,
 				D2D0BACD174B657300FA0781 /* GLKView.m */,
-				D278D620175538560088F138 /* models */,
-				D278D61B17552AAA0088F138 /* textures */,
-				D2A4B702175418F0002CC881 /* shaders */,
 				D285D6401753535600969F64 /* VBKit */,
-				D2D0BB29174C27B700FA0781 /* scene.cpp */,
-				D2D0BB2A174C27B700FA0781 /* scene.h */,
-				D2C1A76F174D8BDB00589987 /* e2classes.h */,
-				D2C1A770174D8BDB00589987 /* e2const.h */,
-				D2C1A771174D8BDB00589987 /* e2core.cpp */,
-				D2C1A772174D8BDB00589987 /* e2core.h */,
-				D2C1A773174D8BDB00589987 /* e2geometry.h */,
-				D2C1A774174D8BDB00589987 /* e2gui.cpp */,
-				D2C1A775174D8BDB00589987 /* e2gui.h */,
-				D2C1A776174D8BDC00589987 /* e2helpers.cpp */,
-				D2C1A777174D8BDC00589987 /* e2helpers.h */,
-				D2C1A778174D8BDC00589987 /* e2manager.cpp */,
-				D2C1A779174D8BDC00589987 /* e2manager.h */,
-				D2C1A77A174D8BDC00589987 /* e2primitives.cpp */,
-				D2C1A77B174D8BDD00589987 /* e2primitives.h */,
-				D2C1A77D174D8BDD00589987 /* e2render.h */,
-				D2C1A77C174D8BDD00589987 /* e2render.cpp */,
-				D2C1A77F174D8BDD00589987 /* e2scene.h */,
-				D2C1A77E174D8BDD00589987 /* e2scene.cpp */,
-				D2C1A780174D8BDD00589987 /* e2tools.h */,
-				D2C1A781174D8BDD00589987 /* e2types.h */,
 				D2D0BAAF174B638B00FA0781 /* Supporting Files */,
 			);
 			path = Glass;
@@ -310,6 +219,9 @@
 		D2D0BAAF174B638B00FA0781 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				D2E8FD061757C3F400D79692 /* shaders */,
+				D2E8FCEA1757C3EE00D79692 /* models */,
+				D2E8FCF21757C3EE00D79692 /* textures */,
 				D2D0BABD174B638B00FA0781 /* MainMenu.xib */,
 				D2D0BAB0174B638B00FA0781 /* Glass-Info.plist */,
 				D2D0BAB1174B638B00FA0781 /* InfoPlist.strings */,
@@ -318,6 +230,52 @@
 				D2D0BAB7174B638B00FA0781 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D2E8FCEA1757C3EE00D79692 /* models */ = {
+			isa = PBXGroup;
+			children = (
+				D2E8FCEB1757C3EE00D79692 /* box.bin */,
+				D2E8FCEC1757C3EE00D79692 /* buddha.bin */,
+				D2E8FCED1757C3EE00D79692 /* bunny.bin */,
+				D2E8FCEE1757C3EE00D79692 /* capsule.bin */,
+				D2E8FCEF1757C3EE00D79692 /* dragon.bin */,
+				D2E8FCF01757C3EE00D79692 /* teapot.bin */,
+				D2E8FCF11757C3EE00D79692 /* venus.bin */,
+			);
+			name = models;
+			path = data/models;
+			sourceTree = SOURCE_ROOT;
+		};
+		D2E8FCF21757C3EE00D79692 /* textures */ = {
+			isa = PBXGroup;
+			children = (
+				D2E8FCF31757C3EE00D79692 /* brick.jpg */,
+				D2E8FCF41757C3EE00D79692 /* f2.jpg */,
+				D2E8FCF51757C3EE00D79692 /* f3.jpg */,
+				D2E8FCF61757C3EE00D79692 /* f4.jpg */,
+				D2E8FCF71757C3EE00D79692 /* floor.jpg */,
+				D2E8FCF81757C3EE00D79692 /* texture2.jpg */,
+			);
+			name = textures;
+			path = data/textures;
+			sourceTree = SOURCE_ROOT;
+		};
+		D2E8FD061757C3F400D79692 /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				D2E8FD071757C3FE00D79692 /* caustic */,
+				D2E8FD081757C3FE00D79692 /* common */,
+				D2E8FD091757C3FE00D79692 /* copy_2d.program */,
+				D2E8FD0A1757C3FE00D79692 /* env */,
+				D2E8FD0B1757C3FE00D79692 /* fullscreen_scaled.program */,
+				D2E8FD0C1757C3FE00D79692 /* fullscreen.program */,
+				D2E8FD0D1757C3FE00D79692 /* glass */,
+				D2E8FD0E1757C3FE00D79692 /* include */,
+				D2E8FD0F1757C3FE00D79692 /* light */,
+				D2E8FD101757C3FE00D79692 /* postprocess */,
+			);
+			name = shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -375,29 +333,29 @@
 				D2D0BAB3174B638B00FA0781 /* InfoPlist.strings in Resources */,
 				D2D0BAB9174B638B00FA0781 /* Credits.rtf in Resources */,
 				D2D0BABF174B638B00FA0781 /* MainMenu.xib in Resources */,
-				D2A4B70D175418FB002CC881 /* caustic in Resources */,
-				D2A4B70E175418FB002CC881 /* common in Resources */,
-				D2A4B70F175418FB002CC881 /* copy_2d.program in Resources */,
-				D2A4B710175418FB002CC881 /* env in Resources */,
-				D2A4B711175418FB002CC881 /* fullscreen_scaled.program in Resources */,
-				D2A4B712175418FB002CC881 /* fullscreen.program in Resources */,
-				D2A4B713175418FC002CC881 /* glass in Resources */,
-				D2A4B714175418FC002CC881 /* include in Resources */,
-				D2A4B715175418FC002CC881 /* light in Resources */,
-				D2A4B716175418FC002CC881 /* postprocess in Resources */,
-				D278D61E17552AAA0088F138 /* brick.jpg in Resources */,
-				D278D61F17552AAA0088F138 /* floor.jpg in Resources */,
-				D278D628175538560088F138 /* box.bin in Resources */,
-				D278D629175538560088F138 /* buddha.bin in Resources */,
-				D278D62A175538560088F138 /* bunny.bin in Resources */,
-				D278D62B175538560088F138 /* capsule.bin in Resources */,
-				D278D62C175538560088F138 /* dragon.bin in Resources */,
-				D278D62D175538560088F138 /* teapot.bin in Resources */,
-				D278D62E175538560088F138 /* venus.bin in Resources */,
-				D2159C361756614900FEE5BC /* f2.jpg in Resources */,
-				D2159C3A175669BD00FEE5BC /* f3.jpg in Resources */,
-				D2159C3B175669BD00FEE5BC /* texture2.jpg in Resources */,
-				D22E918C1756BB9900F1E247 /* f4.jpg in Resources */,
+				D2E8FCF91757C3EE00D79692 /* box.bin in Resources */,
+				D2E8FCFA1757C3EE00D79692 /* buddha.bin in Resources */,
+				D2E8FCFB1757C3EE00D79692 /* bunny.bin in Resources */,
+				D2E8FCFC1757C3EE00D79692 /* capsule.bin in Resources */,
+				D2E8FCFD1757C3EE00D79692 /* dragon.bin in Resources */,
+				D2E8FCFE1757C3EE00D79692 /* teapot.bin in Resources */,
+				D2E8FCFF1757C3EE00D79692 /* venus.bin in Resources */,
+				D2E8FD001757C3EE00D79692 /* brick.jpg in Resources */,
+				D2E8FD011757C3EE00D79692 /* f2.jpg in Resources */,
+				D2E8FD021757C3EE00D79692 /* f3.jpg in Resources */,
+				D2E8FD031757C3EE00D79692 /* f4.jpg in Resources */,
+				D2E8FD041757C3EE00D79692 /* floor.jpg in Resources */,
+				D2E8FD051757C3EE00D79692 /* texture2.jpg in Resources */,
+				D2E8FD111757C3FE00D79692 /* caustic in Resources */,
+				D2E8FD121757C3FE00D79692 /* common in Resources */,
+				D2E8FD131757C3FE00D79692 /* copy_2d.program in Resources */,
+				D2E8FD141757C3FE00D79692 /* env in Resources */,
+				D2E8FD151757C3FE00D79692 /* fullscreen_scaled.program in Resources */,
+				D2E8FD161757C3FE00D79692 /* fullscreen.program in Resources */,
+				D2E8FD171757C3FE00D79692 /* glass in Resources */,
+				D2E8FD181757C3FE00D79692 /* include in Resources */,
+				D2E8FD191757C3FE00D79692 /* light in Resources */,
+				D2E8FD1A1757C3FE00D79692 /* postprocess in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

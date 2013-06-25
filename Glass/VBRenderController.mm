@@ -89,8 +89,7 @@
     VBBuffer* _envSphere;
     VBBuffer* _glassObject;
     VBBuffer* _photonMap;
-    
-    VBLight *_lightSource;
+
 
     GLKMatrix4 _envTransforms[NUM_ENV_OBJECTS];
     GLKMatrix4 _cubemapProjectionMatrix;
@@ -108,6 +107,7 @@
 }
 
 @property (nonatomic, retain) VBRender *render;
+@property (nonatomic, retain) VBLight *lightSource;
 
 @end
 
@@ -172,9 +172,9 @@
     const GLubyte *v = glGetString(GL_VERSION);
     NSLog(@"OpenGL version %s", v);
     
-    _shadowmapSize = 2048;
+    _shadowmapSize = 1024;
     _causticmapSize = 2048;
-    _cubemapSize = 2048;
+    _cubemapSize = 1024;
 //    NSString *_modelName = @"boxes";
     
     float aspect = _glView.drawableWidth/_glView.drawableHeight;
@@ -188,9 +188,9 @@
     [_render.camera perspectiveWithFov:M_PI_4 aspect:aspect near:1.0 far:4096.0];
     
     GLKVector3 from = GLKVector3Make(400.0, 150.0, 0.0);
-    from = GLKVector3Make(-285, 193, -31.0);
+//    from = GLKVector3Make(-285, 193, -31.0);
     [_render.camera lookAtFrom:from
-                            to:GLKVector3Make(100.0, 150.0, 0.0)
+                            to:GLKVector3Make(0.0, 50.0, 0.0)
                             up:GLKVector3Make(0.0, 1.0, 0.0)];
     [_render.camera setLockUpVector:true];
     [_render blend:false];
@@ -206,7 +206,7 @@
     
     _sceneDepthBuffer = [VBFramebuffer framebuffer:@"Env depth" size:CGSizeMake(_causticmapSize, _causticmapSize) texInternalFormat:0 texFormat:0 texType:0];
     
-    _causticBuffer = [VBFramebuffer framebuffer:@"Caustic map" size:CGSizeMake(_causticmapSize, _causticmapSize) texInternalFormat:GL_R16F texFormat:GL_RGB texType:GL_HALF_FLOAT depthInternalFormat:0 depthFormat:0 depthType:0];
+    _causticBuffer = [VBFramebuffer framebuffer:@"Caustic buffer" size:CGSizeMake(_causticmapSize, _causticmapSize) texInternalFormat:GL_R16F texFormat:GL_RGB texType:GL_HALF_FLOAT depthInternalFormat:0 depthFormat:0 depthType:0];
     [_causticBuffer addSameRendertarget];
     [[[_causticBuffer renderTargets] objectAtIndex:0] setWrap:GL_CLAMP_TO_EDGE :GL_CLAMP_TO_EDGE];
     [[[_causticBuffer renderTargets] objectAtIndex:1] setWrap:GL_CLAMP_TO_EDGE :GL_CLAMP_TO_EDGE];
@@ -360,7 +360,7 @@
     [_adaptationProgram setUniformTextures:texturesArray];
 
     // NEXT STAGE
-    _floorTexture = [VBTextureObject loadTexture:[[NSBundle mainBundle] pathForResource:@"f4.jpg" ofType:nil]];
+    _floorTexture = [VBTextureObject loadTexture:[[NSBundle mainBundle] pathForResource:@"floor.jpg" ofType:nil]];
     _brickTexture = [VBTextureObject loadTexture:[[NSBundle mainBundle] pathForResource:@"texture2.jpg" ofType:nil]];
     
     _floor = [VBBuffer createBox:@"room" dimension:GLKVector3Make(1024.0, 1024.0, 1024.0) inNormals:false];
@@ -389,7 +389,7 @@
 //    _glassObject = [VBBuffer createSphere:@"model" radius:radius ver:36 hor:36];
     
 
-    _glassObject = [VBBuffer loadModel:[[NSBundle mainBundle] pathForResource:@"venus" ofType:@"bin"] withScale:0.4];
+    _glassObject = [VBBuffer loadModel:[[NSBundle mainBundle] pathForResource:@"dragon" ofType:@"bin"] withScale:0.4];
     _modelCenter = _glassObject.center;
     
     
@@ -400,6 +400,8 @@
     _photonMap = [VBBuffer createPhotonMap:@"Photon map" size:GLKVector2Make(_causticmapSize, _causticmapSize)];
     
     _materialIOR = 1.41f;
+    
+    
     _applyPostprocess = false;
     _useGeometryShader = true;
     _doubleRefractionGlass = true;
@@ -423,7 +425,7 @@
         
 //        float d = CFAbsoluteTimeGetCurrent()-_lastTime;
         
-        float t = [VBCore c].runTime / 5.0f;
+        float t = [VBCore c].runTime / 10.0f;
         GLKVector3 _b = GLKVector3Make(cos(t), 1.0f + 0.25f * cos(t), sin(t));
         
         GLKVector3 lp = GLKVector3Multiply(GLKVector3Make(384.0, _modelCenter.y + 200.0f, 384.0), _b);
@@ -489,15 +491,12 @@
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             
             [_finalPassProgram bind];
-            [_render bindTexture:0 texture:0];
-//            [_render bindTexture:0 texture:[[_screenBuffer renderTargets] objectAtIndex:0]];
+//            [_render bindTexture:0 texture:0];
+            [_render bindTexture:0 texture:[[_screenBuffer renderTargets] objectAtIndex:0]];
             [_render bindTexture:1 texture:[self luminanceTexture]];
-            [_render bindTexture:2 texture:0];
-//            [_render bindTexture:2 texture:_bloomTexture];
+//            [_render bindTexture:2 texture:0];
+            [_render bindTexture:2 texture:_bloomTexture];
 
-//            render()->bindTexture(0, keyPressed('1') ? 0 : _screenBuffer->renderTarget[0]);
-//            render()->bindTexture(1, luminanceTexture());
-//            render()->bindTexture(2, keyPressed('2') ? 0 : _bloomTexture);
             [_render drawFSQ];
         }
         [_render blend:true];
@@ -881,6 +880,28 @@
     float aspect = _glView.drawableWidth/_glView.drawableHeight;
     [[VBCore c] setAspect:aspect];
     [[VBCore c] setViewSize:GLKVector2Make(_glView.drawableWidth, _glView.drawableHeight)];
+}
+
+- (void) unloadGL {
+    [_screenBuffer unloadFramebuffer];
+    [_postprocessBuffer unloadFramebuffer];
+    [_reflectionRefractionBuffer unloadFramebuffer];
+    [_backfaceBuffer unloadFramebuffer];
+    [_frontfaceBuffer unloadFramebuffer];
+    [_sceneDepthBuffer unloadFramebuffer];
+    [_causticBuffer unloadFramebuffer];
+    [_reflectionRefractionCubemapBuffer unloadFramebuffer];
+    [_shadowCubemapBuffer unloadFramebuffer];
+    [_shadowBuffer unloadFramebuffer];
+    
+    self.lightSource = nil;
+    self.render = nil;
+}
+
+- (IBAction) windowWillClose:(id)sender {
+    [self unloadGL];
+    [_glView pause];
+    [[NSApplication sharedApplication] terminate:nil];
 }
 
 @end

@@ -8,8 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import "VBRenderController.h"
+#import "GLKView.h"
+
 @interface VBAppDelegate : NSObject <NSApplicationDelegate>
 
 @property (assign) IBOutlet NSWindow *window;
+
+@property (assign) IBOutlet VBRenderController *controller;
 
 @end

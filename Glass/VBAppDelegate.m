@@ -10,9 +10,19 @@
 
 @implementation VBAppDelegate
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
-{
+- (void) applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
 }
+
+- (void) applicationWillTerminate:(NSNotification *)notification {
+    NSLog(@"applicationWillTerminate");
+    [_controller.glView pause];
+}
+
+- (void) applicationWillHide:(NSNotification *)notification {
+    NSLog(@"applicationWillHide");
+    [_controller.glView pause];
+}
+
 
 @end
