@@ -1,0 +1,12 @@
+uniform sampler2D new_value;
+uniform sampler2D old_value;
+uniform float time;
+
+out vec4 FragColor;
+
+void main()
+{
+ vec4 cOld = texture(old_value, vec2(0.5));
+ vec4 cNew = texture(new_value, vec2(0.5));
+ FragColor =  mix(cOld, cNew, time);
+}

@@ -66,13 +66,13 @@ static const GLenum RENDERBUFFERS_ENUM[16] =
 }
 
 
-+ (VBFramebuffer*) createCubemapFramebuffer:(NSString*)name
++ (instancetype) createCubemapFramebuffer:(NSString*)name
                                        size:(int)size
                              internalFormat:(int)texInternalFormat
                                      format:(int)texFormat
                                        type:(int)texType {
     
-    return [VBFramebuffer createCubemapFramebuffer:name
+    return [[self class] createCubemapFramebuffer:name
                                               size:size
                                     internalFormat:texInternalFormat
                                      format:texFormat
@@ -83,7 +83,7 @@ static const GLenum RENDERBUFFERS_ENUM[16] =
 }
 
 
-+ (VBFramebuffer*) createCubemapFramebuffer:(NSString*)name
++ (instancetype) createCubemapFramebuffer:(NSString*)name
                                        size:(int)size
                              internalFormat:(int)texInternalFormat
                                      format:(int)texFormat
@@ -92,7 +92,7 @@ static const GLenum RENDERBUFFERS_ENUM[16] =
                                 depthFormat:(int)depthFormat
                                   depthType:(int)depthType {
     
-    VBFramebuffer* F = [[VBFramebuffer alloc] init];
+    VBFramebuffer* F = [[[self class] alloc] init];
 
     F.size = CGSizeMake(size, size);
     F.name = [name copy];
@@ -146,12 +146,12 @@ static const GLenum RENDERBUFFERS_ENUM[16] =
 
 
 
-+ (id) framebuffer:(NSString*)name
++ (instancetype) framebuffer:(NSString*)name
               size:(CGSize)size
  texInternalFormat:(int)texInternalFormat
          texFormat:(int)texFormat
            texType:(int)texType {
-    return [VBFramebuffer framebuffer:name
+    return [self framebuffer:name
                                  size:size
                     texInternalFormat:texInternalFormat
                             texFormat:texFormat
@@ -162,7 +162,7 @@ static const GLenum RENDERBUFFERS_ENUM[16] =
 }
 
 
-+ (id) framebuffer:(NSString*)name
++ (instancetype) framebuffer:(NSString*)name
               size:(CGSize)size
  texInternalFormat:(int)texInternalFormat
          texFormat:(int)texFormat
@@ -171,7 +171,7 @@ depthInternalFormat:(int)depthInternalFormat
        depthFormat:(int)depthFormat
          depthType:(int)depthType {
 
-    VBFramebuffer *F = [[VBFramebuffer alloc] init];
+    VBFramebuffer *F = [[[self class] alloc] init];
 
     F.size  = size;
     F.name  = name;
@@ -243,36 +243,38 @@ depthInternalFormat:(int)depthInternalFormat
 }
 
 
-- (void) addSameRendertarget {
+- (void) duplicateLastRenderTarget {
 
     VBTextureObject *last = [_renderTargets lastObject];
     
     NSString *namec = [NSString stringWithFormat:@"%ld rendertarget", [_renderTargets count]+1];
     
-    VBTextureObject *C = [[VBResourceManager instance] genarateTexture2DWithName:namec
+    VBTextureObject *texture = [[VBResourceManager instance] genarateTexture2DWithName:namec
                                                                             size:last.size
                                                                   internalFormat:last.internalFormat
                                                                           format:last.format
                                                                             type:last.type
                                                                             data:NULL];
     
-    [C setWrap:GL_CLAMP_TO_EDGE :GL_CLAMP_TO_EDGE];
+    [texture setWrap:GL_CLAMP_TO_EDGE :GL_CLAMP_TO_EDGE];
     
-    if (![self addRenderTarget:C]) {
+    if (![self addRenderTarget:texture]) {
         NSLog(@" - Same Texture %@ was not added to %@", namec, self.name);
     }
 }
 
 
 
-- (bool) setDepthTarget:(VBTextureObject *)rt {
-    if ( (!rt) || (rt.size.width != self.size.width) || (rt.size.height != self.size.height)) {
+- (bool) setDepthTarget:(VBTextureObject *)texture {
+    
+    
+    if ( !texture || !CGSizeEqualToSize(texture.size, self.size)) {
         return false;
     }
     
     [self bind];
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, rt.glID, 0);
-    self.depthBuffer = rt;
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture.glID, 0);
+    self.depthBuffer = texture;
 
     return [self check];
 }
@@ -293,9 +295,9 @@ depthInternalFormat:(int)depthInternalFormat
     [self check];
 }
 
-- (void) setCurrentRenderTargetInt:(int)rt {
-    if (rt < _nTargets) {
-        [self setCurrentRenderTarget:[_renderTargets objectAtIndex:rt]];
+- (void) switchRenderTarget:(int)renderTargetNumber {
+    if (renderTargetNumber < _nTargets) {
+        [self setCurrentRenderTarget:[_renderTargets objectAtIndex:renderTargetNumber]];
     }
 }
 

@@ -1,0 +1,10 @@
+in vec2 Vertex;
+in vec2 TexCoord0;
+
+out vec2 TexCoord;
+
+void main()
+{
+ TexCoord  = TexCoord0;
+ gl_Position = vec4(Vertex.xy, 0.0, 1.0);
+}

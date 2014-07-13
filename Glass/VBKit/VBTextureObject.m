@@ -10,35 +10,7 @@
 
 @implementation VBTextureObject
 
-- (void) generateID {
-    glGenTextures(1, &_glID);
-}
-
-- (void) setWrap:(GLenum)S :(GLenum)T {
-    [self setWrap:S :T :GL_CLAMP_TO_EDGE];
-}
-
-- (void) setWrap:(GLenum)S :(GLenum)T :(GLenum)R {
-    
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(self.target, _glID);
-
-    glTexParameteri(_target, GL_TEXTURE_WRAP_S, S);
-    glTexParameteri(_target, GL_TEXTURE_WRAP_T, T);
-    glTexParameteri(_target, GL_TEXTURE_WRAP_R, R);
-}
-
-- (void) setFiltrationMin:(GLenum)min_f mag:(GLenum)mag_f {
-    
-    [[VBResourceManager instance] bindTexture:0 texture:self];
-    
-    glTexParameteri(_target, GL_TEXTURE_MIN_FILTER, min_f);
-    glTexParameteri(_target, GL_TEXTURE_MAG_FILTER, mag_f);
-   
-    GL_CHECK_ERROR
-}
-
-+ (id) loadTexture:(NSString*)filepath{
++ (instancetype) loadTexture:(NSString*)filepath{
 
     NSData *imageData = [NSData dataWithContentsOfFile:filepath];
     
@@ -62,11 +34,11 @@
     
 #endif
     
-    return [VBTextureObject createWith:imageRef filename:[filepath lastPathComponent]];
+    return [[self class] createWith:imageRef filename:[filepath lastPathComponent]];
 
 }
 
-+ (VBTextureObject *) createWith:(CGImageRef)imageRef filename:(NSString*)filename {
++ (instancetype) createWith:(CGImageRef)imageRef filename:(NSString*)filename {
     
     
     GL_CHECK_ERROR
@@ -111,6 +83,35 @@
     
     return texture;
 }
+
+- (void) generateID {
+    glGenTextures(1, &_glID);
+}
+
+- (void) setWrap:(GLenum)S :(GLenum)T {
+    [self setWrap:S :T :GL_CLAMP_TO_EDGE];
+}
+
+- (void) setWrap:(GLenum)S :(GLenum)T :(GLenum)R {
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(self.target, _glID);
+    
+    glTexParameteri(_target, GL_TEXTURE_WRAP_S, S);
+    glTexParameteri(_target, GL_TEXTURE_WRAP_T, T);
+    glTexParameteri(_target, GL_TEXTURE_WRAP_R, R);
+}
+
+- (void) setFiltrationMin:(GLenum)min_f mag:(GLenum)mag_f {
+    
+    [[VBResourceManager instance] bindTexture:0 texture:self];
+    
+    glTexParameteri(_target, GL_TEXTURE_MIN_FILTER, min_f);
+    glTexParameteri(_target, GL_TEXTURE_MAG_FILTER, mag_f);
+    
+    GL_CHECK_ERROR
+}
+
 
 - (void) unload {
     self.name = nil;

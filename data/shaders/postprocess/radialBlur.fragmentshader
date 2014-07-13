@@ -1,0 +1,28 @@
+#include <include\const.h>
+
+uniform sampler2D source_image;
+uniform vec3 texel_radius;
+uniform vec2 blur_center;
+
+in vec2 TexCoord;
+out vec4 FragColor;
+
+void main()
+{
+ float radius = texel_radius.z;
+
+ vec2 dxdy = length(texel_radius.xy) * (blur_center - TexCoord);
+ vec4 value = texture(source_image, TexCoord);
+
+ float x = 1.0;
+ while (x <= radius)
+ {
+  vec2 dudv = dxdy * x;
+  value += texture(source_image, TexCoord + dudv) +
+           texture(source_image, TexCoord - dudv);
+  x += 1.0;
+ }
+ value /= 1.0 + 2.0 * radius;
+
+ FragColor = value;
+}

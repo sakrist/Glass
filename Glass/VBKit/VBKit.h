@@ -52,7 +52,7 @@ static __inline__ BOOL __hasError() {
 #define UNIFORM_MAT4    5
 #define UNIFORM_SAMPLER 6
 
-#define M2_PI 6.283185307179586476925286766559
+#define M2_PI M_PI*2
 
 
 #import "VBCore.h"

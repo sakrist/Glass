@@ -1,0 +1,16 @@
+uniform sampler2D source_image;
+uniform vec2 vTexel;
+
+in vec2 TexCoord;
+out vec4 FragColor;
+
+void main()
+{
+ vec4 cColor = texture(source_image, TexCoord) +
+	       texture(source_image, TexCoord + vec2(vTexel.x, 0.25 * vTexel.y)) + 
+	       texture(source_image, TexCoord - vec2(vTexel.x, 0.25 * vTexel.y)) + 
+	       texture(source_image, TexCoord + vec2(0.25 * vTexel.x, vTexel.y)) + 
+	       texture(source_image, TexCoord - vec2(0.25 * vTexel.x, vTexel.y));
+
+ FragColor = 0.2 * max(vec4(0.0), cColor);
+}

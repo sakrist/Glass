@@ -1,0 +1,26 @@
+#include <include\const.h>
+
+uniform sampler2D source_image;
+uniform vec2 texel;
+
+in vec2 TexCoord;
+out vec4 FragColor;
+
+void main()
+{
+ vec2 dx = vec2(texel.x, 0.0);
+ vec2 dy = vec2(0.0, texel.x);
+
+ float fCenter = texture(source_image, TexCoord).x;
+
+ float fNear = texture(source_image, TexCoord - dx).x + 
+	       texture(source_image, TexCoord + dx).x +
+	       texture(source_image, TexCoord - dy).x +
+	       texture(source_image, TexCoord + dy).x;
+
+ fNear = 0.03125 * fNear * fNear; // 0.5 * 0.25 * 0.25
+
+ float value = min(fCenter, fNear * (fCenter + 1.0));
+
+ FragColor = vec4(value);
+}

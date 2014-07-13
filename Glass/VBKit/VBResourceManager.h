@@ -29,16 +29,20 @@
 
 + (VBResourceManager *)instance;
 
-- (id) genarateTexture2DWithName:(NSString *)name       size:(CGSize)size
+- (id) genarateTexture2DWithName:(NSString *)name
+                            size:(CGSize)size
                   internalFormat:(int)nInternalFormat
                           format:(int)nFormat
-                            type:(int)nType             data:(NSData*)data;
+                            type:(int)nType
+                            data:(NSData*)data;
 
 
-- (id) genarateCubeTextureWithName:(NSString *)name   size:(CGSize)size
+- (id) genarateCubeTextureWithName:(NSString *)name
+                              size:(CGSize)size
                     internalFormat:(int)nInternalFormat
                             format:(int)nFormat
-                              type:(int)nType  datas:(NSMutableArray *)data;
+                              type:(int)nType
+                             datas:(NSMutableArray *)data;
 
 - (void) bindTexture:(GLenum)unit texture:(VBTextureObject*)texture;
 - (void) bindTexture:(GLenum)unit texture:(VBTextureObject*)texture target:(int)target;

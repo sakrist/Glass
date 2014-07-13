@@ -1,0 +1,32 @@
+#include <include\const.h>
+
+uniform sampler2D source_image;
+uniform vec3 texel_radius;
+
+in vec2 TexCoord;
+out vec4 FragColor;
+
+void main()
+{
+ float radius = texel_radius.z;
+
+ float totalScale = 1.0 + radius;
+
+ vec4 value = texture(source_image, TexCoord) * totalScale;
+ 
+ float x = 1.0;
+ while (x <= radius)
+ {
+  float scale = 1.0 + radius - x;
+  vec2 dudv = texel_radius.xy * x;
+
+  value += scale * ( texture(source_image, TexCoord - dudv) +
+                     texture(source_image, TexCoord + dudv) );
+
+  totalScale += 2.0 * scale;
+  x += 1.0;
+ }
+ value /= totalScale;
+
+ FragColor = value;
+}

@@ -16,17 +16,11 @@
 -(void) drawAllElements {
 
     glDrawElements(_nDrawMode, _nIndices, GL_UNSIGNED_INT, NULL);
-    
-//    if (render()->supportVertexBuffers())
-//        DrawElements(nDrawMode, nIndices, GL_UNSIGNED_INT, NULL);
-//    else
-//        DrawElements(nDrawMode, nIndices, GL_UNSIGNED_INT, (GLvoid*)indexData);
 }
 
 - (void) renderAll {
     [self bind];
     [self drawAllElements];
-//    unbind();
 }
 
 - (void) genVertexBuffer {
@@ -49,11 +43,14 @@
     glBindVertexArray(0);
 }
 
-+ (VBBuffer*) createVertexBuffer:(NSString *)name type:(VBBufferAttrType)type
-                        vertices:(NSData*)vData indices:(NSData*)iData
-                      indicesNum:(int)nIndices drawMode:(int)nDrawMode {
++ (instancetype) createVertexBuffer:(NSString *)name
+                               type:(VBBufferAttrType)type
+                           vertices:(NSData*)vData
+                            indices:(NSData*)iData
+                         indicesNum:(int)nIndices
+                           drawMode:(int)nDrawMode {
     
-    VBBuffer* Buffer = [[VBBuffer alloc] init];
+    VBBuffer* Buffer = [[[self class] alloc] init];
     
     Buffer.name = name;
     Buffer.nDrawMode = nDrawMode;
@@ -113,7 +110,7 @@
     return Buffer;
 }
 
-+ (VBBuffer*) createPhotonMap:(NSString*)name size:(GLKVector2)size {
++ (instancetype) createPhotonMap:(NSString*)name size:(GLKVector2)size {
     
     int numPhotons = size.x * size.y;
     GLKVector2 texel = GLKVector2Make(1.0f / size.x, 1.0f / size.y);
@@ -134,7 +131,7 @@
         }
     }
     
-    VBBuffer *photonBuffer = [VBBuffer createVertexBuffer:name type:VBBufferAttrTypeV2
+    VBBuffer *photonBuffer = [self createVertexBuffer:name type:VBBufferAttrTypeV2
                                                  vertices:vData indices:iData
                                                indicesNum:numPhotons drawMode:GL_POINTS];
     
@@ -142,7 +139,7 @@
 }
 
 
-+ (VBBuffer *) createBox:(NSString*)name dimension:(GLKVector3)vDimension  inNormals:(bool)invertNormals {
++ (instancetype) createBox:(NSString*)name dimension:(GLKVector3)vDimension  inNormals:(bool)invertNormals {
     
     const int num_verts = 36;
     
@@ -212,14 +209,13 @@
     NSData *vData = [NSData dataWithBytes:&vert length:sizeof(vert)];
     NSData *iData = [NSData dataWithBytes:&index length:sizeof(index)];
     
-    VBBuffer *b = [VBBuffer createVertexBuffer:name
+    VBBuffer *b = [self createVertexBuffer:name
                                           type:VBBufferAttrTypeV3_N3_T2
                                       vertices:vData indices:iData indicesNum:36 drawMode:GL_TRIANGLES];
     return b;
-//    return createVertexBuffer(name, VERT_V3_N3_T2::getRA(), num_verts, vert, num_verts, index, GL_TRIANGLES);
 }
 
-+ (VBBuffer*) createSphere:(NSString *)name radius:(float)radius ver:(int)nVer hor:(int)nHor {
++ (instancetype) createSphere:(NSString *)name radius:(float)radius ver:(int)nVer hor:(int)nHor {
     
     GLKVector2I dimension = {MAX(4, nHor), MAX(3, nVer)};
         
@@ -227,7 +223,7 @@
     NSMutableData *iData = [NSMutableData data];
     int num_index = [VBBuffer buildTriangleStripIndexes:iData dim:dimension];
     
-    VBBuffer *R = [VBBuffer createVertexBuffer:name
+    VBBuffer *R = [self createVertexBuffer:name
                                           type:VBBufferAttrTypeV3_N3_T2
                                       vertices:vData
                                        indices:iData
@@ -301,11 +297,11 @@
 }
 
 
-+ (id) loadModel:(NSString*)modelFilePath  {
-    return [VBBuffer loadModel:modelFilePath withScale:1];
++ (instancetype) loadModel:(NSString*)modelFilePath  {
+    return [self loadModel:modelFilePath scale:1];
 }
 
-+ (id) loadModel:(NSString*)modelFilePath withScale:(float)scale {
++ (instancetype) loadModel:(NSString*)modelFilePath scale:(float)scale {
     
     NSData *data = [NSData dataWithContentsOfFile:modelFilePath];
     
@@ -315,7 +311,6 @@
     [data getBytes:&min_vec range:NSMakeRange(bytesOffset, 4*3)];
     bytesOffset += sizeof(min_vec);
     
-//    NSLog(@"min %f %f %f", min_vec[0], min_vec[1], min_vec[2]);
     
     GLKVector3 max_vec;
     [data getBytes:&max_vec range:NSMakeRange(bytesOffset, 4*3)];
@@ -326,19 +321,15 @@
     
     float size_mag = GLKVector3Length(size);
     float m_scale = 250.0f / size_mag;
-//    NSLog(@"model %f %f", size_mag, m_scale);
     
     if (scale < m_scale) {
         m_scale = scale;
     }
     
-//    NSLog(@"min %f %f %f", max_vec[0], max_vec[1], max_vec[2]);
-    
     int icount = 0;
     [data getBytes:&icount range:NSMakeRange(bytesOffset, 4)];
     bytesOffset += 4;
     
-//    NSLog(@"index count %d", icount);
     
     // read indices
     NSMutableData *indicesData = [NSMutableData dataWithData:[data subdataWithRange:NSMakeRange(bytesOffset,  sizeof(GLuint) * icount)]];
@@ -353,25 +344,17 @@
     if (m_scale != 1) {
         GLKVector3 *v = (GLKVector3*)[verticesData bytes];
         
-//        GLKVector3 max_new = GLKVector3Make(-10000.0,-10000.0,-10000.0);
-//        GLKVector3 min_new = GLKVector3Make( 10000.0, 10000.0, 10000.0);
-        
         int all_vn = vcount*2;
         for (int i = 0; i < all_vn; i += 2) {
             v[i] = GLKVector3MultiplyScalar(GLKVector3Subtract(v[i], center), m_scale);
-//            max_new = GLKVector3Maximum(max_new, v[i]);
-//            min_new = GLKVector3Minimum(min_new, v[i]);
         }
         
     }
     
-//    NSLog(@"vertices count %d", vcount);
     bytesOffset += vcount*(3+3)*4; // end
     
-//    NSLog(@" %d %d", bytesOffset, data.length);
     
-    
-    VBBuffer *R = [VBBuffer createVertexBuffer:[modelFilePath lastPathComponent]
+    VBBuffer *R = [[self class] createVertexBuffer:[modelFilePath lastPathComponent]
                                           type:VBBufferAttrTypeV3_N3
                                       vertices:verticesData
                                        indices:indicesData

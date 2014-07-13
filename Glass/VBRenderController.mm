@@ -14,8 +14,8 @@
 #include <stdlib.h>
 
 #define NUM_ENV_OBJECTS 10
-#define TEXTURE_FORMAT  GL_RGB16F
-#define TEXTURE_TYPE    GL_HALF_FLOAT
+#define VB_TEXTURE_INTERNAL_FORMAT  GL_RGB16F
+#define VB_TEXTURE_TYPE    GL_HALF_FLOAT
 
 @interface VBRenderController () {
     int _numPPTextures;
@@ -28,7 +28,6 @@
     bool _useGeometryShader;
     bool _doubleRefractionGlass;
     bool _doubleRefractionCaustic;
-    bool _drawInfo;
     float _materialIOR;
     
     NSString *_modelName;
@@ -129,42 +128,23 @@
 
 - (void) awakeFromNib {
     NSLog(@"%@" , _glView);
-
-    
-//    ENGINEPARAMS P = {0};
-//    
-//    P.eRender.bForwardContext = false;
-//    P.eWindowStyle = RW_FIXED_NO_CAPTION;
-//    P.vSizeX = 800;
-//    P.vSizeY = 600;
-//    //P.vPosX = 1100;
-//    
-//    core.setParameters(P);
-//    ApplicationScene scene;
-//    core.run(&scene);
-    
 }
 
 - (void) mouseDragged:(NSEvent *)theEvent {
-//        [theEvent deltaX]
     
-    GLKVector3 p = _render.camera->_position;
-    p.y += [theEvent deltaY];
-    p.z += [theEvent deltaX];
+    GLKVector3 p = _render.camera.position;
+    p.x += [theEvent deltaY];
+    p.z -= [theEvent deltaX];
+
+    [_render.camera rotateWithVector:GLKVector3Make([theEvent deltaX]/500.0f, -[theEvent deltaY]/500.0f, 0)
+                         aroundPoint:_render.camera->_view];
     
-    [_render.camera lookAtFrom:p
-                            to:_render.camera->_view
-                            up:GLKVector3Make(0.0, 1.0, 0.0)];
+    
 }
 
 
 - (void)scrollWheel:(NSEvent *)event {
-    GLKVector3 p = _render.camera->_position;
-    p.x += [event scrollingDeltaY];
-    
-    [_render.camera lookAtFrom:p
-                            to:_render.camera->_view
-                            up:GLKVector3Make(0.0, 1.0, 0.0)];
+
 }
 
 - (void) setupGL {
@@ -175,9 +155,9 @@
     _shadowmapSize = 1024;
     _causticmapSize = 2048;
     _cubemapSize = 1024;
-//    NSString *_modelName = @"boxes";
     
     float aspect = _glView.drawableWidth/_glView.drawableHeight;
+    
     [[VBCore c] setAspect:aspect];
     [[VBCore c] setViewSize:GLKVector2Make(_glView.drawableWidth, _glView.drawableHeight)];
     
@@ -188,7 +168,7 @@
     [_render.camera perspectiveWithFov:M_PI_4 aspect:aspect near:1.0 far:4096.0];
     
     GLKVector3 from = GLKVector3Make(400.0, 150.0, 0.0);
-//    from = GLKVector3Make(-285, 193, -31.0);
+
     [_render.camera lookAtFrom:from
                             to:GLKVector3Make(0.0, 50.0, 0.0)
                             up:GLKVector3Make(0.0, 1.0, 0.0)];
@@ -199,26 +179,56 @@
     
     _screenBuffer = [VBFramebuffer framebuffer:@"Screen"
                                           size:_glView.frame.size
-                             texInternalFormat:TEXTURE_FORMAT
+                             texInternalFormat:VB_TEXTURE_INTERNAL_FORMAT
                                      texFormat:GL_RGB
-                                       texType:TEXTURE_TYPE];
+                                       texType:VB_TEXTURE_TYPE];
     
     
-    _sceneDepthBuffer = [VBFramebuffer framebuffer:@"Env depth" size:CGSizeMake(_causticmapSize, _causticmapSize) texInternalFormat:0 texFormat:0 texType:0];
+    _sceneDepthBuffer = [VBFramebuffer framebuffer:@"Env depth"
+                                              size:CGSizeMake(_causticmapSize, _causticmapSize)
+                                 texInternalFormat:0
+                                         texFormat:0
+                                           texType:0];
     
-    _causticBuffer = [VBFramebuffer framebuffer:@"Caustic buffer" size:CGSizeMake(_causticmapSize, _causticmapSize) texInternalFormat:GL_R16F texFormat:GL_RGB texType:GL_HALF_FLOAT depthInternalFormat:0 depthFormat:0 depthType:0];
-    [_causticBuffer addSameRendertarget];
+    _causticBuffer = [VBFramebuffer framebuffer:@"Caustic buffer"
+                                           size:CGSizeMake(_causticmapSize, _causticmapSize)
+                              texInternalFormat:VB_TEXTURE_INTERNAL_FORMAT
+                                      texFormat:GL_RGB
+                                        texType:VB_TEXTURE_TYPE
+                            depthInternalFormat:0
+                                    depthFormat:0
+                                      depthType:0];
+    
+    [_causticBuffer duplicateLastRenderTarget];
+    
     [[[_causticBuffer renderTargets] objectAtIndex:0] setWrap:GL_CLAMP_TO_EDGE :GL_CLAMP_TO_EDGE];
     [[[_causticBuffer renderTargets] objectAtIndex:1] setWrap:GL_CLAMP_TO_EDGE :GL_CLAMP_TO_EDGE];
     
 
-    _reflectionRefractionCubemapBuffer = [VBFramebuffer createCubemapFramebuffer:@"Cubemap single buffer" size:_cubemapSize internalFormat:TEXTURE_FORMAT format:GL_RGB type:TEXTURE_TYPE];
+    _reflectionRefractionCubemapBuffer = [VBFramebuffer createCubemapFramebuffer:@"Cubemap single buffer"
+                                                                            size:_cubemapSize
+                                                                  internalFormat:VB_TEXTURE_INTERNAL_FORMAT
+                                                                          format:GL_RGB
+                                                                            type:VB_TEXTURE_TYPE];
     
-    _shadowCubemapBuffer = [VBFramebuffer createCubemapFramebuffer:@"Cubemap double buffer" size:_shadowmapSize internalFormat:GL_RGB8 format:GL_RGB type:GL_UNSIGNED_BYTE];
+    _shadowCubemapBuffer = [VBFramebuffer createCubemapFramebuffer:@"Cubemap double buffer"
+                                                              size:_shadowmapSize
+                                                    internalFormat:GL_RGB8
+                                                            format:GL_RGB
+                                                              type:GL_UNSIGNED_BYTE];
     
     
-    _backfaceBuffer = [VBFramebuffer framebuffer:@"Backface" size:CGSizeMake(_causticmapSize, _causticmapSize) texInternalFormat:GL_RGBA16F texFormat:GL_RGBA texType:GL_HALF_FLOAT];
-    _frontfaceBuffer = [VBFramebuffer framebuffer:@"Frontface" size:CGSizeMake(_causticmapSize, _causticmapSize) texInternalFormat:GL_RGBA16F texFormat:GL_RGBA texType:GL_HALF_FLOAT];
+    _backfaceBuffer = [VBFramebuffer framebuffer:@"Backface"
+                                            size:CGSizeMake(_causticmapSize, _causticmapSize)
+                               texInternalFormat:GL_RGBA16F
+                                       texFormat:GL_RGBA
+                                         texType:VB_TEXTURE_TYPE];
+    
+    _frontfaceBuffer = [VBFramebuffer framebuffer:@"Frontface"
+                                             size:CGSizeMake(_causticmapSize, _causticmapSize)
+                                texInternalFormat:GL_RGBA16F
+                                        texFormat:GL_RGBA
+                                          texType:VB_TEXTURE_TYPE];
     
     
     [[[_screenBuffer renderTargets] objectAtIndex:0] setFiltrationMin:GL_NEAREST mag:GL_NEAREST];
@@ -234,7 +244,10 @@
     CGSize s = CGSizeMake([self.view frame].size.width/2, [self.view frame].size.height/2);
     
     _postprocessBuffer = [VBFramebuffer framebuffer:@"PPBuffer" size:s
-                                  texInternalFormat:TEXTURE_FORMAT texFormat:GL_RGB texType:TEXTURE_TYPE depthInternalFormat:0 depthFormat:0 depthType:0];
+                                  texInternalFormat:VB_TEXTURE_INTERNAL_FORMAT
+                                          texFormat:GL_RGB
+                                            texType:VB_TEXTURE_TYPE
+                                depthInternalFormat:0 depthFormat:0 depthType:0];
                           
     int sx = [self.view frame].size.width / 4;
     int sy = [self.view frame].size.height / 4;
@@ -244,9 +257,9 @@
         NSString *texName = [NSString stringWithFormat:@"_pptexture %d", i];
         _postprocessTextures[i] = [[VBResourceManager instance] genarateTexture2DWithName:texName
                                                                                 size:CGSizeMake(sx, sy)
-                                                                      internalFormat:TEXTURE_FORMAT
+                                                                      internalFormat:VB_TEXTURE_INTERNAL_FORMAT
                                                                               format:GL_RGB
-                                                                                type:TEXTURE_TYPE
+                                                                                type:VB_TEXTURE_TYPE
                                                                                 data:NULL];
         
         [_postprocessTextures[i] setWrap:GL_CLAMP_TO_EDGE :GL_CLAMP_TO_EDGE];
@@ -254,9 +267,9 @@
         if (i == 0) {
             _bloomTexture = [[VBResourceManager instance] genarateTexture2DWithName:@"bloom"
                                                                size:CGSizeMake(sx, sy)
-                                                     internalFormat:TEXTURE_FORMAT
+                                                     internalFormat:VB_TEXTURE_INTERNAL_FORMAT
                                                              format:GL_RGB
-                                                               type:TEXTURE_TYPE
+                                                               type:VB_TEXTURE_TYPE
                                                                data:NULL];
             
             [_bloomTexture setWrap:GL_CLAMP_TO_EDGE :GL_CLAMP_TO_EDGE];            
@@ -274,15 +287,27 @@
     
     
     
-    _adaptationTexture[0] = [[VBResourceManager instance] genarateTexture2DWithName:@"adaptation texture 1" size:CGSizeMake(1,1)
-                                                                     internalFormat:TEXTURE_FORMAT format:GL_RGB type:TEXTURE_TYPE data:0];
-    _adaptationTexture[1] = [[VBResourceManager instance] genarateTexture2DWithName:@"adaptation texture 2" size:CGSizeMake(1,1)
-                                                                     internalFormat:TEXTURE_FORMAT format:GL_RGB type:TEXTURE_TYPE data:0];
+    _adaptationTexture[0] = [[VBResourceManager instance] genarateTexture2DWithName:@"adaptation texture 1"
+                                                                               size:CGSizeMake(1,1)
+                                                                     internalFormat:VB_TEXTURE_INTERNAL_FORMAT
+                                                                             format:GL_RGB
+                                                                               type:VB_TEXTURE_TYPE data:0];
+    
+    _adaptationTexture[1] = [[VBResourceManager instance] genarateTexture2DWithName:@"adaptation texture 2"
+                                                                               size:CGSizeMake(1,1)
+                                                                     internalFormat:VB_TEXTURE_INTERNAL_FORMAT
+                                                                             format:GL_RGB
+                                                                               type:VB_TEXTURE_TYPE data:0];
     _adaptationIndex = 0;
     
     
     _reflectionRefractionBuffer = [VBFramebuffer framebuffer:@"Cubemap framebuffer" size:CGSizeMake(_cubemapSize, _cubemapSize) texInternalFormat:0 texFormat:0 texType:0];
-    _reflectionRefractionTexture = [[VBResourceManager instance] genarateCubeTextureWithName:@"Env cubemap" size:CGSizeMake(_cubemapSize, _cubemapSize) internalFormat:TEXTURE_FORMAT format:GL_RGB type:TEXTURE_TYPE datas:nil];
+    _reflectionRefractionTexture = [[VBResourceManager instance] genarateCubeTextureWithName:@"Env cubemap"
+                                                                                        size:CGSizeMake(_cubemapSize, _cubemapSize)
+                                                                              internalFormat:VB_TEXTURE_INTERNAL_FORMAT
+                                                                                      format:GL_RGB
+                                                                                        type:VB_TEXTURE_TYPE
+                                                                                       datas:nil];
     
     _shadowBuffer = [VBFramebuffer framebuffer:@"Shadowmap buffer" size:CGSizeMake(_shadowmapSize, _shadowmapSize) texInternalFormat:0 texFormat:0 texType:0];
     _shadowmapTexture = [[VBResourceManager instance] genarateCubeTextureWithName:@"Shadowmap cube texture"
@@ -386,10 +411,9 @@
     
     float radius = 50.0;
     _modelCenter = GLKVector3Make(0.0, radius, 0.0);
-//    _glassObject = [VBBuffer createSphere:@"model" radius:radius ver:36 hor:36];
     
-
-    _glassObject = [VBBuffer loadModel:[[NSBundle mainBundle] pathForResource:@"dragon" ofType:@"bin"] withScale:0.4];
+    NSString *dragonFile = [[NSBundle mainBundle] pathForResource:@"dragon" ofType:@"bin"];
+    _glassObject = [VBBuffer loadModel:dragonFile scale:0.4];
     _modelCenter = _glassObject.center;
     
     
@@ -405,7 +429,6 @@
     _applyPostprocess = false;
     _useGeometryShader = true;
     _doubleRefractionGlass = true;
-    _drawInfo = false;
     
     _modelTransformation = GLKMatrix4MakeTranslation(_modelCenter.x, _modelCenter.y, _modelCenter.z);
     
@@ -423,7 +446,6 @@
     
     if (_loded) {
         
-//        float d = CFAbsoluteTimeGetCurrent()-_lastTime;
         
         float t = [VBCore c].runTime / 10.0f;
         GLKVector3 _b = GLKVector3Make(cos(t), 1.0f + 0.25f * cos(t), sin(t));
@@ -431,21 +453,6 @@
         GLKVector3 lp = GLKVector3Multiply(GLKVector3Make(384.0, _modelCenter.y + 200.0f, 384.0), _b);
         
         [_lightSource lookAtFrom:lp to:_modelCenter up:GLKVector3Make(0.0, 1.0, 0.0)];
-        
-        
-//        _lightTransform = GLKMatrix4Rotate(_lightTransform, 0.01, 1, 0, 0);
-//
-//        _lightSource.modelViewMatrix = GLKMatrix4Translate(_lightSource.modelViewMatrix, 1000, 0, 0);
-//        _lightSource.modelViewMatrix = GLKMatrix4Multiply(_lightSource.modelViewMatrix, _lightTransform);
-//        _lightSource.modelViewMatrix = GLKMatrix4Translate(_lightSource.modelViewMatrix, -1000, 0, 0);
-//        [_lightSource update];
-//        
-//        
-//        GLKVector3 p = GLKMatrix4MultiplyVector3(_lightSource.modelViewProjectionMatrix, _lightSource.position);
-//        [_lightSource setPosition:p];
-        
-//        _lightSource.modelViewMatrix = GLKMatrix4Multiply(_lightSource.modelViewMatrix,_lightTransform);
-//        [_lightSource update];
         
 
         _modelTransformation = GLKMatrix4Rotate(_modelTransformation, 0.01, 0.0, -2.0, 0.0);
@@ -463,9 +470,11 @@
 
     
     if (_loded) {
+        
         [self renderShadowmap];
 
         [self prerenderCaustic];
+        
         [self renderCaustic];
 
         [self prerenderGlass];
@@ -491,10 +500,10 @@
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             
             [_finalPassProgram bind];
-//            [_render bindTexture:0 texture:0];
+
             [_render bindTexture:0 texture:[[_screenBuffer renderTargets] objectAtIndex:0]];
             [_render bindTexture:1 texture:[self luminanceTexture]];
-//            [_render bindTexture:2 texture:0];
+
             [_render bindTexture:2 texture:_bloomTexture];
 
             [_render drawFSQ];
@@ -618,7 +627,7 @@
     
     [_render bindFramebuffer:nil];
     [_render bindFramebuffer:_causticBuffer];
-    [_causticBuffer setCurrentRenderTargetInt:0];
+    [_causticBuffer switchRenderTarget:0];
     
     glClear(GL_COLOR_BUFFER_BIT);
     
@@ -646,7 +655,7 @@
     [_photonMap renderAll];
     [_render blend:false];
     
-    [_causticBuffer setCurrentRenderTargetInt:1];
+    [_causticBuffer switchRenderTarget:1];
     [_noiseReductionProgram bind];
     
     VBTextureObject *rt0 = [[_causticBuffer renderTargets] objectAtIndex:0];
@@ -819,7 +828,7 @@
 - (void) applyPostprocess {
     
     [_render bindFramebuffer:_postprocessBuffer];
-    [_postprocessBuffer setCurrentRenderTargetInt:0];
+    [_postprocessBuffer switchRenderTarget:0];
     
     [_downsampleProgram bind];
     [_downsampleProgram setUniform:@"vTexel" v2:[[_screenBuffer.renderTargets objectAtIndex:0] texel]];

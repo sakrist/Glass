@@ -27,26 +27,14 @@ static __inline__ bool VBUniformIsZero(VBUniform u) {
 
 
 @interface VBProgramObject : NSObject {
-    int _mvm_loc;
-    int _mvp_loc;
-    int _cam_loc;
-    int _l0_loc;
-    int _lp_loc;
     
-    GLint ProgramObject;
-    GLint VertexShader;
-    GLint GeometryShader;
-    GLint FragmentShader;
-    NSString *name;
-    
-    int ID;
-
 }
 
+@property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSMutableDictionary *uniforms;
 
-+ (id) loadProgram:(NSString*)filename;
-+ (id) loadProgram:(NSString*)filename param:(NSString*)param;
++ (instancetype) loadProgram:(NSString*)filename;
++ (instancetype) loadProgram:(NSString*)filename param:(NSString*)param;
 
 - (void) setUniformTextures:(NSMutableArray*)names;
 - (VBUniform) uniformWithName:(NSString*)uname;
@@ -73,26 +61,5 @@ static __inline__ bool VBUniformIsZero(VBUniform u) {
 - (void) setModelViewMatrix:(GLKMatrix4)m;
 - (void) setLightProjectionMatrix:(GLKMatrix4)m;
 
-
-//int& modelViewMatrixUniformLocation(){return _mvm_loc;}
-//int& mvpMatrixUniformLocation()      {return _mvp_loc;}
-//int& cameraUniformLocation()         {return _cam_loc;}
-//int& primaryLightUniformLocation()   {return _l0_loc;}
-//int& lightProjectionMatrixLocation() {return _lp_loc;}
-//
-//void setUniform(string name,                   float x, float y){float val[2] = {x, y};       _uniform(name, val);}
-//void setUniform(string name,          float x, float y, float z){float val[3] = {x, y, z};    _uniform(name, val);}
-//void setUniform(string name, float x, float y, float z, float w){float val[4] = {x, y, z, w}; _uniform(name, val);}
-//void setUniform(string name, int count, void* value){_uniform(name, value, count);}
-//
-//// arrays
-//void setUniform(string name, float value[], int nCount){_uniform(name, value, nCount);}
-//void setUniform(string name, vec2  value[], int nCount){_uniform(name, value, nCount);}
-//void setUniform(string name, vec3  value[], int nCount){_uniform(name, value, nCount);}
-//void setUniform(string name, vec4  value[], int nCount){_uniform(name, value, nCount);}
-//void setUniform(string name, mat4  value[], int nCount){_uniform(name, value, nCount);}
-//
-//// samplers
-//void setUniform(string name, int value){_uniform(name, &value);}
 
 @end

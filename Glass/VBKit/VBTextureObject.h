@@ -31,7 +31,9 @@
 - (void) setFiltrationMin:(GLenum)min_f mag:(GLenum)mag_f;
 
 
-+ (id) loadTexture:(NSString*)filepath;
++ (instancetype) loadTexture:(NSString*)filepath;
+
++ (instancetype) createWith:(CGImageRef)imageRef filename:(NSString*)filename;
 
 - (void) unload;
 

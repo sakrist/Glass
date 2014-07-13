@@ -1,0 +1,2 @@
+VS:..\common\fullscreen.vertexshader
+FS:hdrFinalPass.fragmentshader

@@ -61,29 +61,38 @@ static __inline__ GLKVector3 fromSpherical(float theta, float phi) {
 @property (nonatomic)    GLuint indexBuffer;
 @property (nonatomic)    int nAttribs;
 @property (nonatomic) GLKVector3 center;
-//@property (nonatomic)    renderAttributeVector attribs;
 
-    // backward compatibility
+// backward compatibility
 @property (nonatomic, retain) NSData *bufferData;
 @property (nonatomic, retain) NSData * indexData;
     
 - (void) bind;
 - (void) renderAll;
 - (void) drawAllElements;
-//- (void) drawElements(Index mode, Index count, Index offset);
+
 - (void) unbind;
 
-+ (VBBuffer*) createPhotonMap:(NSString*)name size:(GLKVector2)size;
++ (instancetype) loadModel:(NSString*)modelFilePath;
 
-+ (VBBuffer*) createVertexBuffer:(NSString *)name type:(VBBufferAttrType)type vertices:(NSData*)vData indices:(NSData*)iData
-                      indicesNum:(int)nIndices drawMode:(int)nDrawMode;
-
-+ (VBBuffer*) createBox:(NSString*)name dimension:(GLKVector3)vDimension inNormals:(bool)invertNormals;
-
-+ (VBBuffer*) createSphere:(NSString *)name radius:(float)radius ver:(int)nVer hor:(int)nHor;
++ (instancetype) loadModel:(NSString*)modelFilePath scale:(float)scale;
 
 
-+ (id) loadModel:(NSString*)modelFilePath;
-+ (id) loadModel:(NSString*)modelFilePath withScale:(float)scale;
++ (instancetype) createPhotonMap:(NSString*)name size:(GLKVector2)size;
+
++ (instancetype) createVertexBuffer:(NSString *)name
+                               type:(VBBufferAttrType)type
+                           vertices:(NSData*)vData
+                            indices:(NSData*)iData
+                         indicesNum:(int)nIndices
+                           drawMode:(int)nDrawMode;
+
++ (instancetype) createBox:(NSString*)name
+                 dimension:(GLKVector3)vDimension
+                 inNormals:(bool)invertNormals;
+
++ (instancetype) createSphere:(NSString *)name
+                       radius:(float)radius
+                          ver:(int)nVer
+                          hor:(int)nHor;
 
 @end

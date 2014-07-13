@@ -13,6 +13,20 @@
 @interface VBProgramObject () {
     NSMutableString *_defines;
     NSString *_prog_folder;
+    
+@private
+    int _mvm_loc;
+    int _mvp_loc;
+    int _cam_loc;
+    int _l0_loc;
+    int _lp_loc;
+    
+    GLint __programObject;
+    GLint __vertexShader;
+    GLint __geometryShader;
+    GLint __fragmentShader;
+    
+    int ID;
 }
 
 @end
@@ -22,8 +36,17 @@
 - (id) init {
     self = [super init];
     if (self) {
-        ProgramObject = VertexShader = GeometryShader = FragmentShader = 0;
-        _mvp_loc = _cam_loc = _l0_loc = _lp_loc = _mvm_loc = -1;
+        __programObject = 0;
+        __vertexShader = 0;
+        __geometryShader = 0;
+        __fragmentShader = 0;
+        
+        _mvp_loc = -1;
+        _cam_loc = -1;
+        _l0_loc = -1;
+        _lp_loc = -1;
+        _mvm_loc = -1;
+        
         self.uniforms = [NSMutableDictionary dictionary];
         return self;
     }
@@ -31,12 +54,12 @@
     return nil;
 }
 
-+ (id) loadProgram:(NSString*)filename {
-    return [VBProgramObject loadProgram:filename param:@""];
++ (instancetype) loadProgram:(NSString*)filename {
+    return [[self class] loadProgram:filename param:@""];
 }
 
-+ (id) loadProgram:(NSString*)filename param:(NSString*)param {
-    VBProgramObject *program = [[VBProgramObject alloc] init];
++ (instancetype) loadProgram:(NSString*)filename param:(NSString*)param {
+    VBProgramObject *program = [[[self class] alloc] init];
     
     bool t = [program load:filename param:param];
     
@@ -53,7 +76,7 @@
 /// PROGRAM OBJECT
 - (bool) load:(NSString*)filename param:(NSString*)param {
 
-    name = filename;
+    self.name = filename;
     
     if (![[NSFileManager defaultManager] fileExistsAtPath:filename]) {
         filename = [[NSBundle mainBundle] pathForResource:filename ofType:nil];
@@ -110,9 +133,6 @@
     
     _prog_folder = [filename stringByDeletingLastPathComponent];
     
-    // parse uniforms
-//    Uniforms.clear();
-    
 
     NSString *fName = [_prog_folder stringByAppendingPathComponent:vertex_source];
     if (![[NSFileManager defaultManager] fileExistsAtPath:fName]) {
@@ -127,13 +147,7 @@
     } else {
         vertex_shader = DEFAULT_VERTEXSHADER;
     }
-    
-#ifdef LOG_SHADERS
-    string ofile = "output\\" + getFileName(filename) + "_VS.txt";
-    ofstream o1(ofile);
-    o1 << vertex_shader;
-    o1.close();
-#endif
+
     
     if (![geometry_source isEqualToString:@"none"] && geometry_source != nil) {
         
@@ -148,12 +162,6 @@
         }
     }
     
-#ifdef LOG_SHADERS
-    ofile = "output\\" + getFileName(filename) + "_GS.txt";
-    ofstream o2(ofile);
-    o2 << geom_shader;
-    o2.close();
-#endif
     
     fName = [_prog_folder stringByAppendingPathComponent:fragment_source];
     if (![[NSFileManager defaultManager] fileExistsAtPath:fName]) {
@@ -167,12 +175,6 @@
         frag_shader = DEFAULT_FRAGMENTSHADER;
     }
     
-#ifdef LOG_SHADERS
-    ofile = "output\\" + getFileName(filename) + "_FS.txt";
-    ofstream o3(ofile);
-    o3 << frag_shader;
-    o3.close();
-#endif
     
     [self buildProgram:vertex_shader geom:geom_shader frag:frag_shader];
     
@@ -183,40 +185,38 @@
 - (void) buildProgram:(NSString*)vertex_source geom:(NSString*)geom_source frag:(NSString*)frag_source {
     
     
-//    checkErrorF("Ce2Render::buildProgram", program->name);
-    
-    if (!glIsProgram(ProgramObject))
+    if (!glIsProgram(__programObject))
     {
-        ProgramObject = glCreateProgram();
+        __programObject = glCreateProgram();
         GL_CHECK_ERROR
     }
     
-    if (!glIsShader(VertexShader))
+    if (!glIsShader(__vertexShader))
     {
-        VertexShader  = glCreateShader(GL_VERTEX_SHADER);
+        __vertexShader  = glCreateShader(GL_VERTEX_SHADER);
         GL_CHECK_ERROR
     }
     
     int nLen = (int)[vertex_source length];
     
     const GLchar * src = (GLchar *)[vertex_source UTF8String];
-    glShaderSource(VertexShader, 1, &src, &nLen);
+    glShaderSource(__vertexShader, 1, &src, &nLen);
     GL_CHECK_ERROR
-    glCompileShader(VertexShader);
+    glCompileShader(__vertexShader);
     GL_CHECK_ERROR
     
     int cStatus = 0;
     GLsizei nLogLen = 0;
-    glGetShaderiv(VertexShader, GL_COMPILE_STATUS, &cStatus);
+    glGetShaderiv(__vertexShader, GL_COMPILE_STATUS, &cStatus);
     GL_CHECK_ERROR
-    glGetShaderiv(VertexShader, GL_INFO_LOG_LENGTH, &nLogLen);
+    glGetShaderiv(__vertexShader, GL_INFO_LOG_LENGTH, &nLogLen);
     if (nLogLen > 1)
     {
         GLchar *infoLog = (GLchar *)malloc(nLogLen + 1);
         memset(infoLog, 0, nLogLen + 1);
-        glGetShaderInfoLog(VertexShader, nLogLen, &nLogLen, infoLog);
+        glGetShaderInfoLog(__vertexShader, nLogLen, &nLogLen, infoLog);
         if (cStatus != GL_TRUE) {
-            NSLog(@"%@ VertexShader %@", name,[NSString stringWithUTF8String:infoLog]);
+            NSLog(@"%@ VertexShader %@", self.name,[NSString stringWithUTF8String:infoLog]);
         }
         
         free(infoLog);
@@ -224,95 +224,95 @@
     
     if (cStatus)
     {
-        glAttachShader(ProgramObject, VertexShader);
+        glAttachShader(__programObject, __vertexShader);
         GL_CHECK_ERROR
         
-        glBindAttribLocation(ProgramObject, RENDER_ATTRIB_POSITION,  "Vertex");
+        glBindAttribLocation(__programObject, RENDER_ATTRIB_POSITION,  "Vertex");
         GL_CHECK_ERROR
         
-        glBindAttribLocation(ProgramObject, RENDER_ATTRIB_NORMAL,    "Normal");
+        glBindAttribLocation(__programObject, RENDER_ATTRIB_NORMAL,    "Normal");
         GL_CHECK_ERROR
-        glBindAttribLocation(ProgramObject, RENDER_ATTRIB_TEXCOORD0, "TexCoord0");
+        glBindAttribLocation(__programObject, RENDER_ATTRIB_TEXCOORD0, "TexCoord0");
         
         GL_CHECK_ERROR
-        glBindAttribLocation(ProgramObject, RENDER_ATTRIB_TANGENT,   "Tangent");
+        glBindAttribLocation(__programObject, RENDER_ATTRIB_TANGENT,   "Tangent");
         GL_CHECK_ERROR
     }
     
     ///////////////////////////////////////////////// GEOMETRY
     if (![geom_source isEqualToString:@"none"])
     {
-        if (!glIsShader(GeometryShader))
+        if (!glIsShader(__geometryShader))
         {
-            GeometryShader= glCreateShader(GL_GEOMETRY_SHADER);
+            __geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
             GL_CHECK_ERROR
             nLen = (int)[geom_source length];
             src = [geom_source UTF8String];
-            glShaderSource(GeometryShader, 1, &src, &nLen);
+            glShaderSource(__geometryShader, 1, &src, &nLen);
             
             GL_CHECK_ERROR
             
             cStatus = 0;
             nLogLen = 0;
-            glCompileShader(GeometryShader);
+            glCompileShader(__geometryShader);
             GL_CHECK_ERROR
             
-            glGetShaderiv(GeometryShader, GL_COMPILE_STATUS, &cStatus);
+            glGetShaderiv(__geometryShader, GL_COMPILE_STATUS, &cStatus);
             GL_CHECK_ERROR
             
-            glGetShaderiv(GeometryShader, GL_INFO_LOG_LENGTH, &nLogLen);
+            glGetShaderiv(__geometryShader, GL_INFO_LOG_LENGTH, &nLogLen);
             if (nLogLen > 1)
             {
                 GLchar* infoLog = malloc(nLogLen + 1);
                 memset(infoLog, 0, nLogLen + 1);
-                glGetShaderInfoLog(GeometryShader, nLogLen, &nLogLen, infoLog);
+                glGetShaderInfoLog(__geometryShader, nLogLen, &nLogLen, infoLog);
                 
                 if (cStatus != GL_TRUE) {
-                    NSLog(@" - %@ GeometryShader %@", name, [NSString stringWithUTF8String:infoLog]);
+                    NSLog(@" - %@ GeometryShader %@", self.name, [NSString stringWithUTF8String:infoLog]);
                 }
                 
                 free(infoLog);
             }
             if (cStatus)
             {
-                glAttachShader(ProgramObject, GeometryShader);
+                glAttachShader(__programObject, __geometryShader);
                 GL_CHECK_ERROR
             }
         }
     }
     
     ///////////////////////////////////////////////// FRAGMENT
-    if (!glIsShader(FragmentShader))
+    if (!glIsShader(__fragmentShader))
     {
-        FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        __fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         GL_CHECK_ERROR
     }
     
     nLen = (int)[frag_source length];
     src  = [frag_source UTF8String];
     
-    glShaderSource(FragmentShader, 1, &src, &nLen);
+    glShaderSource(__fragmentShader, 1, &src, &nLen);
     GL_CHECK_ERROR
     
-    glCompileShader(FragmentShader);
+    glCompileShader(__fragmentShader);
     GL_CHECK_ERROR
     
     cStatus = 0;
     nLogLen = 0;
-    glGetShaderiv(FragmentShader, GL_COMPILE_STATUS, &cStatus);
+    glGetShaderiv(__fragmentShader, GL_COMPILE_STATUS, &cStatus);
     GL_CHECK_ERROR
     
-    glGetShaderiv(FragmentShader, GL_INFO_LOG_LENGTH, &nLogLen);
+    glGetShaderiv(__fragmentShader, GL_INFO_LOG_LENGTH, &nLogLen);
     if (nLogLen > 1)
     {
         GLchar* infoLog = malloc(nLogLen + 1);
         memset(infoLog, 0, nLogLen + 1);
         
-        glGetShaderInfoLog(FragmentShader, nLogLen, &nLogLen, infoLog);
+        glGetShaderInfoLog(__fragmentShader, nLogLen, &nLogLen, infoLog);
         
 
         if (cStatus != GL_TRUE) {
-            NSLog(@" - %@ FragmentShader %@", name, [NSString stringWithUTF8String:infoLog]);
+            NSLog(@" - %@ FragmentShader %@", self.name, [NSString stringWithUTF8String:infoLog]);
         }
         
         free(infoLog);
@@ -320,37 +320,37 @@
     
     if (cStatus)
     {
-        glAttachShader(ProgramObject, FragmentShader);
+        glAttachShader(__programObject, __fragmentShader);
         GL_CHECK_ERROR
-        glBindFragDataLocation(ProgramObject, 0, "FragColor");
+        glBindFragDataLocation(__programObject, 0, "FragColor");
         GL_CHECK_ERROR
-        glBindFragDataLocation(ProgramObject, 1, "FragColor1");
+        glBindFragDataLocation(__programObject, 1, "FragColor1");
         GL_CHECK_ERROR
-        glBindFragDataLocation(ProgramObject, 2, "FragColor2");
+        glBindFragDataLocation(__programObject, 2, "FragColor2");
         GL_CHECK_ERROR
-        glBindFragDataLocation(ProgramObject, 3, "FragColor3");
+        glBindFragDataLocation(__programObject, 3, "FragColor3");
         GL_CHECK_ERROR
-        glBindFragDataLocation(ProgramObject, 4, "FragColor4");
+        glBindFragDataLocation(__programObject, 4, "FragColor4");
         GL_CHECK_ERROR
     }
     
-    glLinkProgram(ProgramObject);
+    glLinkProgram(__programObject);
     GL_CHECK_ERROR
-    glGetProgramiv(ProgramObject, GL_LINK_STATUS, &cStatus);
+    glGetProgramiv(__programObject, GL_LINK_STATUS, &cStatus);
     GL_CHECK_ERROR
-    glGetProgramiv(ProgramObject, GL_INFO_LOG_LENGTH, &nLogLen);
+    glGetProgramiv(__programObject, GL_INFO_LOG_LENGTH, &nLogLen);
     GL_CHECK_ERROR
     
     if (nLogLen > 1)
     {
         GLchar* infoLog = malloc(nLogLen + 1);
         memset(infoLog, 0, nLogLen + 1);
-        glGetProgramInfoLog(ProgramObject, nLogLen, &nLogLen, infoLog);
+        glGetProgramInfoLog(__programObject, nLogLen, &nLogLen, infoLog);
 
         GL_CHECK_ERROR
         
         if (cStatus != GL_TRUE) {
-            NSLog(@" - %@ ProgramObject %@", name, [NSString stringWithUTF8String:infoLog]);
+            NSLog(@" - %@ ProgramObject %@", self.name, [NSString stringWithUTF8String:infoLog]);
         }
         free(infoLog);
     }
@@ -359,9 +359,9 @@
     {
         int nMaxLen = 0;
         int nUniforms = 0;
-//        program->Uniforms.clear();
-        glGetProgramiv(ProgramObject, GL_ACTIVE_UNIFORMS, &nUniforms);
-        glGetProgramiv(ProgramObject, GL_ACTIVE_UNIFORM_MAX_LENGTH, &nMaxLen);
+
+        glGetProgramiv(__programObject, GL_ACTIVE_UNIFORMS, &nUniforms);
+        glGetProgramiv(__programObject, GL_ACTIVE_UNIFORM_MAX_LENGTH, &nMaxLen);
 
         
         char * uName = malloc(nMaxLen);
@@ -373,16 +373,13 @@
             VBUniform P = {0,0};
             
             
-            glGetActiveUniform(ProgramObject, i, nMaxLen, &nLen, &nSize, &P.type, uName);
-            P.location = glGetUniformLocation(ProgramObject, uName);
-            
-//            NSLog(@"uniform %d %d %@", P.type, P.location, [NSString stringWithUTF8String:uName]);
+            glGetActiveUniform(__programObject, i, nMaxLen, &nLen, &nSize, &P.type, uName);
+            P.location = glGetUniformLocation(__programObject, uName);
             
             NSValue *v = [NSValue valueWithBytes:&P objCType:@encode(VBUniform)];
             [_uniforms setObject:v forKey:[NSString stringWithUTF8String:uName]];
             
         }
-        //  log("--------------");
         free(uName);
 
 
@@ -496,7 +493,6 @@
         range = [newSource rangeOfString:@"#include"]; 
     }
     
-//    NSLog(@"%@",newSource);
     
     return newSource;
 }
@@ -519,7 +515,7 @@
 }
 
 - (void) bind {
-    glUseProgram(ProgramObject);
+    glUseProgram(__programObject);
     GL_CHECK_ERROR
 }
 
@@ -535,7 +531,7 @@
     
     if (VBUniformIsZero(uniform))
     {
-        NSLog(@"Set missed uniform %@ for %@", uname, name);
+        NSLog(@"Set missed uniform %@ for %@", uname, self.name);
         return;
     }
 
@@ -575,9 +571,9 @@
 
 - (void) setUniformTextures:(NSMutableArray*)names {
     [self bind];
-    for (NSString *_name in names) {
-        int i = (int)[names indexOfObject:_name];
-        [self _uniformWithName:_name value:&i];
+    for (NSString *name in names) {
+        int i = (int)[names indexOfObject:name];
+        [self _uniformWithName:name value:&i];
     }
 }
 

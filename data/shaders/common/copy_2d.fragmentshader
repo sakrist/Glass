@@ -1,0 +1,9 @@
+uniform sampler2D source_texture;
+
+in vec2 TexCoord;
+out vec4 FragColor;
+
+void main()
+{
+ FragColor = texture(source_texture, TexCoord);
+}

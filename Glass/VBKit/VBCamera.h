@@ -27,19 +27,20 @@ typedef union _GLKMatrix4Cube GLKMatrix4Cube;
 @interface VBCamera : NSObject {
 
 @public
-    GLKVector3 _position;
     GLKVector3 _view;
     GLKMatrix4 _mat_mv;
     GLKMatrix4 _mat_proj;
     GLKMatrix4 _mat_mvp;
     GLKMatrix4 _mat_lpr;
     GLKMatrix4 _mat_inv_mvp;
-    float _fov;
-    float _aspect;
-    float _znear;
-    float _zfar;
     
 }
+
+@property (nonatomic) GLKVector3 position;
+@property (nonatomic) float fov;
+@property (nonatomic) float aspect;
+@property (nonatomic) float znear;
+@property (nonatomic) float zfar;
 
 @property (nonatomic) bool lockUpVector;
 @property (nonatomic) GLKMatrix4 modelViewMatrix;
@@ -47,15 +48,12 @@ typedef union _GLKMatrix4Cube GLKMatrix4Cube;
 @property (nonatomic) GLKMatrix4 projectionMatrix;
 @property (nonatomic) GLKMatrix4 inverseMVPMatrix;
 
-- (GLKMatrix4) projectionToTexutreMatrix;
-- (GLKVector3) position;
 - (GLKVector3) sideVector;
 - (GLKVector3) upVector;
 - (GLKVector3) direction;
 
-- (float) nearClipplane;
-- (float) farClipplane;
 
+- (void) rotateWithVector:(GLKVector3)rotationVector aroundPoint:(GLKVector3)center;
 
 - (void) lookAtFrom:(GLKVector3)from to:(GLKVector3)to up:(GLKVector3)up;
 

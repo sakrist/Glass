@@ -1,0 +1,23 @@
+#include <include\const.h>
+
+uniform sampler2D source_image;
+uniform sampler2D luminocity_texture;
+uniform sampler2D bloom_image;
+
+in vec2 TexCoord;
+out vec4 FragColor;
+
+void main()
+{
+ float fAverageLuminance = texture(luminocity_texture, vec2(0.5)).x;
+
+ vec4 cColor = texture(source_image, TexCoord);
+ vec4 cBloom = texture(bloom_image, TexCoord);
+ vec4 cResult = cColor + cBloom;
+
+ float fHDRLuminance = dot(cResult.xyz, LUMINANCE_VEC);
+ float fScaledLuminance = (0.01 / fAverageLuminance) * fHDRLuminance;
+ float fToneScale = 1.0 - exp(-0.33333333 * fScaledLuminance);
+
+ FragColor = cResult * fToneScale; 
+}

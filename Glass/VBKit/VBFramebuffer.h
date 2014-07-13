@@ -21,12 +21,26 @@
 @property (nonatomic) CGSize size;
 @property (nonatomic) GLuint nTargets;
 
-+ (id) framebuffer:(NSString*)name size:(CGSize)size texInternalFormat:(int)texInternalFormat texFormat:(int)texFormat  texType:(int)texType;
++ (instancetype) framebuffer:(NSString*)name
+                        size:(CGSize)size
+           texInternalFormat:(int)texInternalFormat
+                   texFormat:(int)texFormat
+                     texType:(int)texType;
 
-+ (id) framebuffer:(NSString*)name size:(CGSize)size texInternalFormat:(int)texInternalFormat texFormat:(int)texFormat  texType:(int)texType  depthInternalFormat:(int)depthInternalFormat depthFormat:(int)depthFormat depthType:(int)depthType;
++ (instancetype) framebuffer:(NSString*)name
+                        size:(CGSize)size
+           texInternalFormat:(int)texInternalFormat
+                   texFormat:(int)texFormat
+                     texType:(int)texType
+         depthInternalFormat:(int)depthInternalFormat
+                 depthFormat:(int)depthFormat
+                   depthType:(int)depthType;
 
-+ (VBFramebuffer*) createCubemapFramebuffer:(NSString*)name size:(int)size internalFormat:(int)texInternalFormat
-                                     format:(int)texFormat type:(int)texType;
++ (instancetype) createCubemapFramebuffer:(NSString*)name
+                                     size:(int)size
+                           internalFormat:(int)texInternalFormat
+                                   format:(int)texFormat
+                                     type:(int)texType;
 
 - (void) bind;
 - (bool) check;
@@ -34,14 +48,14 @@
 - (bool) addRenderTarget:(VBTextureObject*)rt;
 - (bool) setDepthTarget:(VBTextureObject *)rt;
 
-- (void) addSameRendertarget;
+- (void) duplicateLastRenderTarget;
 
 - (void) setCurrentRenderTarget:(VBTextureObject*)texture;
 - (void) setCurrentRenderTarget:(VBTextureObject*)texture target:(GLenum) target;
-- (void) setCurrentRenderTargetInt:(int)rt;
+- (void) switchRenderTarget:(int)renderTargetNumber;
 
 
-- (void) setDrawBuffersCount:(int) c;
+- (void) setDrawBuffersCount:(int)c;
 
 - (void) unloadFramebuffer;
 
