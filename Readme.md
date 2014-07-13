@@ -8,7 +8,7 @@ Some classes written based on original structure and some with mine expirence.
 Shaders just copied from original project without changes.
 Unfortunatly shaders files does not have any copyrights.
 
-![image](https://github.com/sakrist/Glass/blob/master/Screenshot.jpg)
+![image](https://raw.githubusercontent.com/sakrist/Glass/master/Screenshot.jpg)
 
 
 All Objective-C code under [MIT](http://en.wikipedia.org/wiki/MIT_License)
