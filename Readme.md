@@ -1,7 +1,7 @@
 Glass with caustic
 
 Original author Sergey Reznik, [article](http://www.uraldev.ru/articles/39/page/1).<br>
-This project is just overwritten on Objective-C of his work.
+This project is just Objective-C re-implementing of his project.
 
 Some classes written based on original structure and some with mine expirence.
 
