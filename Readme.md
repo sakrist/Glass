@@ -14,3 +14,7 @@ Unfortunatly shaders files does not have any copyrights.
 All Objective-C code under [MIT](http://en.wikipedia.org/wiki/MIT_License)
 
 Enjoy!
+
+======
+
+Twitter: [@SAKrisT](https://twitter.com/SAKrisT)
